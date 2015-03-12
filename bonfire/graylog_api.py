@@ -14,10 +14,10 @@ from .dateutils import datetime_converter
 
 class Message(object):
     def __init__(self, message_dict={}):
-        self.message_dict = dict(message_dict)
-        self.timestamp = arrow.get(message_dict.get("timestamp", None))
-        self.level = message_dict.get("level", syslog.LOG_INFO)
-        self.message = message_dict.get("message", "")
+        self.message_dict = dict(message_dict["message"])
+        self.timestamp = arrow.get(self.message_dict.get("timestamp", None))
+        self.level = self.message_dict.get("level", syslog.LOG_INFO)
+        self.message = self.message_dict.get("message", "")
 
     def simple_formatted(self):
         return "[{}] {}: {}".format(self.timestamp, self.level, self.message)
@@ -42,18 +42,23 @@ class SearchResult(object):
 
 
 class SearchRange(object):
-    def __init__(self, from_time=None, to_time=None):
+    def __init__(self, from_time=None, to_time=None, relative=False):
         self.from_time = datetime_converter(from_time)
         self.to_time = datetime_converter(to_time)
+        self.relative = relative
 
     def is_relative(self):
-        return self.to_time is None
+        return self.relative
 
     def range_in_seconds(self):
         if self.is_relative():
-            return (arrow.now('local') - self.from_time).seconds
+            range = (arrow.now('local') - self.from_time).seconds
         else:
-            return (self.to_time - self.from_time).seconds
+            range = (self.to_time - self.from_time).seconds
+
+        if range < 1:
+            return 1
+        return range
 
 
 class SearchQuery(object):
@@ -92,6 +97,7 @@ class GraylogAPI(object):
             else:
                 params[label] = item
 
+        #print("Querying: {} {}".format(self.base_url + url, params))
         r = requests.get(self.base_url + url, params=params, auth=(self.username, self.password))
 
         if r.status_code == requests.codes.ok:
@@ -113,6 +119,9 @@ class GraylogAPI(object):
 
             sr = SearchRange(from_time=result.range_from, to_time=result.range_to)
 
+            if result.total_results > 10000:
+                raise RuntimeError("Query returns more than 10000 log entries. Use offsets to query in chunks.")
+
             result = self.search_raw(query.query, sr, result.total_results, query.offset,
                                      query.filter, query.fields, sort)
 
@@ -132,8 +141,14 @@ class GraylogAPI(object):
             range_args["range"] = search_range.range_in_seconds()
         else:
             url += "absolute"
-            range_args["from"] = search_range.from_time.to(self.host_tz).format("YYYY-MM-DD HH:mm:ss")
-            range_args["to"] = search_range.to_time.to(self.host_tz).format("YYYY-MM-DD HH:mm:ss")
+            range_args["from"] = search_range.from_time.to(self.host_tz).format("YYYY-MM-DD HH:mm:ss.SSS")
+
+            if search_range.to_time is None:
+                to_time = arrow.now(self.host_tz)
+            else:
+                to_time = search_range.to_time.to(self.host_tz)
+
+            range_args["to"] = to_time.format("YYYY-MM-DD HH:mm:ss.SSS")
 
         if fields is not None:
             fields = ",".join(fields)

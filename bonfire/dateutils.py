@@ -10,8 +10,14 @@ import datetime
 import arrow
 
 def datetime_parser(s):
+    """
+    Parse timestamp in local time
+    :param s:
+    :return:
+    """
     try:
         dt = arrow.get(s)
+        dt = dt.replace(tzinfo='local')
     except:
         c = pdt.Calendar()
         result, what = c.parse(s)
@@ -26,7 +32,8 @@ def datetime_parser(s):
             # Failed to parse
             raise ValueError("Don't understand date '"+s+"'")
 
-        dt = arrow.get(dt, 'local')
+        dt = arrow.get(dt)
+        dt = dt.replace(tzinfo='local')
     return dt
 
 

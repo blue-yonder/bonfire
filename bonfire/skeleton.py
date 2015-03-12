@@ -13,6 +13,9 @@ Besides console scripts, the header (i.e. until _logger...) of this file can
 also be used as template for Python modules.
 
 Note: This skeleton file can be safely removed if not needed!
+
+TODO for release v0.1:
+
 """
 from __future__ import division, print_function, absolute_import
 
@@ -54,6 +57,7 @@ from .formats import tail_format, dump_format
 @click.option("-f", "--follow", default=False, is_flag=True, help="Poll the logging server for new logs matching the query (sets search from to now, limit to None)")
 @click.option("-l", "--interval", default=1000, help="Polling interval in ms (default: 1000)")
 @click.option("-n", "--limit", default=10, help="Limit the number of results (default: 10)")
+@click.option("-a", "--latency", default=2, help="Latency of polling queries (default: 2)")
 @click.option('--field', '-e', multiple=True)
 @click.option('--sort', '-s', default=None)
 @click.option("--asc/--desc", default=False, help="Sort ascecnding / descending")
@@ -71,6 +75,7 @@ def run(host,
         follow,
         interval,
         limit,
+        latency,
         field,
         sort,
         asc,
@@ -110,6 +115,8 @@ def run(host,
     if keyring:
         store_password_in_keyring(gl_api.host, gl_api.username, password)
 
+    # Check if the query should be retrieved from the configuration
+
     # Configure the base query
     sr = SearchRange(from_time=search_from, to_time=search_to)
 
@@ -125,19 +132,23 @@ def run(host,
     if follow:
         limit = None
         sort = None
-        sr.from_time = arrow.now('local')
+        sr.from_time = arrow.now('local').replace(seconds=-latency-1)
+        sr.to_time = arrow.now('local').replace(seconds=-latency)
 
     # Create the initial query object
     q = SearchQuery(search_range=sr, query=query, limit=limit, fields=fields, sort=sort, ascending=asc)
 
     # Check the mode in which the program should run (dump, tail or interactive mode)
     if mode == "tail":
-        formatter = tail_format()
+        if fields:
+            formatter = tail_format(fields)
+        else:
+            formatter = tail_format()
     elif mode == "dump":
         formatter = dump_format()
 
     if mode == "tail" or mode == "dump":
-        run_logprint(gl_api, q, formatter, follow, interval, output)
+        run_logprint(gl_api, q, formatter, follow, interval, latency, output)
     elif mode == "interactive":
         if output:
             raise RuntimeError("Output file option not allowed in interactive mode")
