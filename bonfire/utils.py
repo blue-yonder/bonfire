@@ -17,7 +17,12 @@ def cli_error(msg):
 
 def api_from_config(cfg, node_name="default"):
     section_name = "node:" + node_name
-    return GraylogAPI(host="host", port="port", username="username")
+
+    host = cfg.get(section_name, "host")
+    port = cfg.get(section_name, "port")
+    username = cfg.get(section_name, "username")
+
+    return GraylogAPI(host=host, port=port, username=username)
 
 
 def api_from_host(host, port, username):

@@ -11,7 +11,9 @@ import arrow
 
 def datetime_parser(s):
     """
+
     Parse timestamp in local time
+
     :param s:
     :return:
     """

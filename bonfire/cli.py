@@ -1,28 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-This is a skeleton file that can serve as a starting point for a Python
-console script. To run this script uncomment the following line in the
-console_scripts section in setup.cfg:
 
-    hello_world = bonfire.skeleton:run
-
-Then run `python setup.py install` which will install the command `hello_world`
-inside your current environment.
-Besides console scripts, the header (i.e. until _logger...) of this file can
-also be used as template for Python modules.
-
-Note: This skeleton file can be safely removed if not needed!
-
-TODO for release v0.1:
-
-"""
 from __future__ import division, print_function, absolute_import
 
-import argparse
-import sys
-import logging
+# Todo:
 
+import logging
 from bonfire import __version__
 
 __author__ = "Malte Harder"
@@ -35,11 +18,13 @@ import click
 import getpass
 import arrow
 
-from .config import get_config, get_password_from_keyring, store_password_in_keyring
+
+from .config import get_config, get_password_from_keyring, store_password_in_keyring, get_templated_option
 from .graylog_api import SearchRange, SearchQuery
 from .utils import cli_error, api_from_config, api_from_host
 from .output import run_logprint
 from .formats import tail_format, dump_format
+from .ui import run_ui
 
 @click.command()
 @click.option("--node", default=None,  help="Label of a preconfigured graylog node")
@@ -51,7 +36,7 @@ from .formats import tail_format, dump_format
 @click.option("-@", "--search-from", default="5 minutes ago", help="Query range from")
 @click.option("-#", "--search-to", default=None, help="Query range to (default: now)")
 @click.option('-t', '--tail', 'mode', flag_value='tail', default=True, help="Show the last n lines for the query")
-@click.option('-d', '--dump', 'mode', flag_value='dump', help="Print the last n lines for the query as a csv")
+@click.option('-d', '--dump', 'mode', flag_value='dump', help="Print the query result as a csv")
 @click.option('-i', '--interactive', 'mode', flag_value='interactive', help="Start an interactive terminal UI")
 @click.option('-o', '--output', default=None, help="Output logs to file (only tail/dump mode)")
 @click.option("-f", "--follow", default=False, is_flag=True, help="Poll the logging server for new logs matching the query (sets search from to now, limit to None)")
@@ -59,6 +44,7 @@ from .formats import tail_format, dump_format
 @click.option("-n", "--limit", default=10, help="Limit the number of results (default: 10)")
 @click.option("-a", "--latency", default=2, help="Latency of polling queries (default: 2)")
 @click.option('--field', '-e', multiple=True)
+@click.option('--template-option', '-x', multiple=True)
 @click.option('--sort', '-s', default=None)
 @click.option("--asc/--desc", default=False, help="Sort ascecnding / descending")
 @click.argument('query', default="*")
@@ -77,6 +63,7 @@ def run(host,
         limit,
         latency,
         field,
+        template_option,
         sort,
         asc,
         query):
@@ -116,6 +103,28 @@ def run(host,
         store_password_in_keyring(gl_api.host, gl_api.username, password)
 
     # Check if the query should be retrieved from the configuration
+    if query[0] == ":":
+        section_name = "query" + query
+        template_options = dict(map(lambda t: tuple(str(t).split("=", 1)), template_option))
+        query = get_templated_option(cfg, section_name, "query", template_options)
+
+        if cfg.has_option(section_name, "limit"):
+            limit = get_templated_option(cfg, section_name, "limit", template_options)
+
+        if cfg.has_option(section_name, "from"):
+            search_from = get_templated_option(cfg, section_name, "from", template_options)
+
+        if cfg.has_option(section_name, "to"):
+            search_to = get_templated_option(cfg, section_name, "to", template_options)
+
+        if cfg.has_option(section_name, "sort"):
+            sort = get_templated_option(cfg, section_name, "sort", template_options)
+
+        if cfg.has_option(section_name, "asc"):
+            asc = get_templated_option(cfg, section_name, "asc", template_options)
+
+        if cfg.has_option(section_name, "fields"):
+            field = get_templated_option(cfg, section_name, "fields", template_options).split(",")
 
     # Configure the base query
     sr = SearchRange(from_time=search_from, to_time=search_to)
@@ -152,23 +161,10 @@ def run(host,
     elif mode == "interactive":
         if output:
             raise RuntimeError("Output file option not allowed in interactive mode")
+        if follow:
+            raise RuntimeError("Interactive follow mode not yet implemented")
+        run_ui(gl_api, q, fields)
 
-    # print(url)
-    # r = requests.get(url, headers=header, auth=(name, password))
-    # print(r)
-    # print(r.json())
-    #
-    # import urwid
-    #
-    # def show_or_exit(key):
-    #     if key in ('q', 'Q'):
-    #         raise urwid.ExitMainLoop()
-    #     txt.set_text(repr(key))
-    #
-    # txt = urwid.Text(u"Hello World")
-    # fill = urwid.Filler(txt, 'top')
-    # loop = urwid.MainLoop(fill, unhandled_input=show_or_exit)
-    # loop.run()
 
 if __name__ == "__main__":
     run()
