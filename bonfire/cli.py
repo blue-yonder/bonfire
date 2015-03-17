@@ -132,7 +132,7 @@ def run(host,
     # Pass none if the list of fields is empty
     fields = None
     if field:
-        fields = field
+        fields = list(field)
 
     if limit <= 0:
         limit = None

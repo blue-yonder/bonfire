@@ -98,7 +98,7 @@ class GraylogAPI(object):
                 params[label] = item
 
         #print("Querying: {} {}".format(self.base_url + url, params))
-        r = requests.get(self.base_url + url, params=params, auth=(self.username, self.password))
+        r = requests.get(self.base_url + url, params=params, headers=self.get_header, auth=(self.username, self.password))
 
         if r.status_code == requests.codes.ok:
             return SearchResult(r.json())

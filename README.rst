@@ -52,3 +52,13 @@ Queries
 
 Configuration
 =============
+
+Known Bugs
+==========
+
+* bonfire expects graylog's timezone to be UTC.
+
+Release Notes
+=============
+
+* v0.0.1: Initial release, limited feature set.
