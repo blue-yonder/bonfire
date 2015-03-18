@@ -128,6 +128,9 @@ def run(host,
         if cfg.has_option(section_name, "fields"):
             field = get_templated_option(cfg, section_name, "fields", template_options).split(",")
 
+        if cfg.has_option(section_name, "stream"):
+            stream = get_templated_option(cfg, section_name, "stream", template_options)
+
     # Configure the base query
     sr = SearchRange(from_time=search_from, to_time=search_to)
 
