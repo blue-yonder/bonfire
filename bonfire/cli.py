@@ -43,10 +43,11 @@ from .ui import run_ui
 @click.option("-l", "--interval", default=1000, help="Polling interval in ms (default: 1000)")
 @click.option("-n", "--limit", default=10, help="Limit the number of results (default: 10)")
 @click.option("-a", "--latency", default=2, help="Latency of polling queries (default: 2)")
+@click.option("-r", "--stream", default=None, help="Stream ID of the stream to query (default: no stream filter)")
 @click.option('--field', '-e', multiple=True, help="Fields to include in the query result")
 @click.option('--template-option', '-x', multiple=True, help="Template options for the stored query")
 @click.option('--sort', '-s', default=None, help="Field used for sorting (default: timestamp)")
-@click.option("--asc/--desc", default=False, help="Sort ascecnding / descending")
+@click.option("--asc/--desc", default=False, help="Sort ascending / descending")
 @click.argument('query', default="*")
 def run(host,
         node,
@@ -62,6 +63,7 @@ def run(host,
         interval,
         limit,
         latency,
+        stream,
         field,
         template_option,
         sort,
@@ -144,8 +146,18 @@ def run(host,
         sr.from_time = arrow.now('local').replace(seconds=-latency-1)
         sr.to_time = arrow.now('local').replace(seconds=-latency)
 
+    # Get the user permissions
+    userinfo = gl_api.user_info(username)
+
+    # If the permissions are not set or a stream is
+    stream_filter = None
+    if stream or userinfo["permissions"] != ["*"]:
+        if not stream:
+            stream = gl_api.streams()["streams"][0]["id"]
+        stream_filter = "streams:{}".format(stream)
+
     # Create the initial query object
-    q = SearchQuery(search_range=sr, query=query, limit=limit, fields=fields, sort=sort, ascending=asc)
+    q = SearchQuery(search_range=sr, query=query, limit=limit, filter=stream_filter, fields=fields, sort=sort, ascending=asc)
 
     # Check the mode in which the program should run (dump, tail or interactive mode)
     if mode == "tail":

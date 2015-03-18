@@ -101,7 +101,7 @@ class GraylogAPI(object):
         r = requests.get(self.base_url + url, params=params, headers=self.get_header, auth=(self.username, self.password))
 
         if r.status_code == requests.codes.ok:
-            return SearchResult(r.json())
+            return r.json()
         else:
             r.raise_for_status()
 
@@ -131,6 +131,14 @@ class GraylogAPI(object):
 
         result.query_object = query
         return result
+
+    def user_info(self, username):
+        url = "users/" + username
+        return self.get(url=url)
+
+    def streams(self):
+        url = "streams"
+        return self.get(url=url)
 
     def search_raw(self, query, search_range, limit=None, offset=None, filter=None, fields=None, sort=None):
         url = "search/universal/"
@@ -163,4 +171,4 @@ class GraylogAPI(object):
             sort=sort,
             **range_args)
 
-        return result
+        return SearchResult(result)
