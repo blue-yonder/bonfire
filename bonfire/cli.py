@@ -9,8 +9,8 @@ import logging
 from bonfire import __version__
 
 __author__ = "Malte Harder"
-__copyright__ = "Malte Harder"
-__license__ = "none"
+__copyright__ = "Blue Yonder"
+__license__ = "new-bsd"
 
 _logger = logging.getLogger(__name__)
 
@@ -37,7 +37,6 @@ from .ui import run_ui
 @click.option("-#", "--search-to", default=None, help="Query range to (default: now)")
 @click.option('-t', '--tail', 'mode', flag_value='tail', default=True, help="Show the last n lines for the query (default)")
 @click.option('-d', '--dump', 'mode', flag_value='dump', help="Print the query result as a csv")
-@click.option('-i', '--interactive', 'mode', flag_value='interactive', help="Start an interactive terminal UI")
 @click.option('-o', '--output', default=None, help="Output logs to file (only tail/dump mode)")
 @click.option("-f", "--follow", default=False, is_flag=True, help="Poll the logging server for new logs matching the query (sets search from to now, limit to None)")
 @click.option("-l", "--interval", default=1000, help="Polling interval in ms (default: 1000)")
@@ -104,6 +103,8 @@ def run(host,
     if keyring:
         store_password_in_keyring(gl_api.host, gl_api.username, password)
 
+    username = gl_api.username
+
     # Check if the query should be retrieved from the configuration
     if query[0] == ":":
         section_name = "query" + query
@@ -142,7 +143,7 @@ def run(host,
     if limit <= 0:
         limit = None
 
-    # Set limit to None, sort to none and start time to now if follow is active
+    # Set limit to None, sort to none and start time to now, if follow is active
     if follow:
         limit = None
         sort = None
@@ -152,11 +153,16 @@ def run(host,
     # Get the user permissions
     userinfo = gl_api.user_info(username)
 
-    # If the permissions are not set or a stream is
+    # If the permissions are not set or a stream is specified
     stream_filter = None
-    if stream or userinfo["permissions"] != ["*"]:
+    if stream or (userinfo["permissions"] != ["*"] and gl_api.default_stream is None):
         if not stream:
-            stream = gl_api.streams()["streams"][0]["id"]
+            streams = gl_api.streams()["streams"]
+            click.echo("Please select a stream to query:")
+            for i, stream in enumerate(streams):
+                click.echo("{}: Stream '{}' (id: {})".format(i, stream["title"], stream["id"]))
+            i = click.prompt("Enter stream number:", type=int, default=0)
+            stream = streams[i]["id"]
         stream_filter = "streams:{}".format(stream)
 
     # Create the initial query object
@@ -171,15 +177,7 @@ def run(host,
     elif mode == "dump":
         formatter = dump_format()
 
-    if mode == "tail" or mode == "dump":
-        run_logprint(gl_api, q, formatter, follow, interval, latency, output)
-    elif mode == "interactive":
-        if output:
-            raise RuntimeError("Output file option not allowed in interactive mode")
-        if follow:
-            raise RuntimeError("Interactive follow mode not yet implemented")
-        run_ui(gl_api, q, fields)
-
+    run_logprint(gl_api, q, formatter, follow, interval, latency, output)
 
 if __name__ == "__main__":
     run()

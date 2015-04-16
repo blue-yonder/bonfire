@@ -78,12 +78,13 @@ class SearchQuery(object):
 
 
 class GraylogAPI(object):
-    def __init__(self, host, port, username, password=None, host_tz='utc'):
+    def __init__(self, host, port, username, password=None, host_tz='utc', default_stream=None):
         self.host = host
         self.port = port
         self.username = username
         self.password = password
         self.host_tz = host_tz
+        self.default_stream = default_stream
 
         self.get_header = {"Accept": "application/json"}
         self.base_url = "http://{host}:{port}/".format(host=host, port=port)
@@ -143,6 +144,9 @@ class GraylogAPI(object):
     def search_raw(self, query, search_range, limit=None, offset=None, filter=None, fields=None, sort=None):
         url = "search/universal/"
         range_args = {}
+
+        if filter is None and self.default_stream is not None:
+            filter = "streams:{}".format(self.default_stream)
 
         if search_range.is_relative():
             url += "relative"

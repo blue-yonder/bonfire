@@ -1,4 +1,4 @@
-.. include:: ../README.rst
+
 
 Contents
 ========
@@ -6,7 +6,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Documentation <index>
+   Documentation <docs>
    License <license>
    Authors <authors>
    Module Reference <_rst/modules>

@@ -91,7 +91,7 @@ Release Notes
 =============
 
 * v0.0.4: Extended documentation & stream access
-    * Use the first stream the user has access to if no stream is specified und the user has no global search rights
+    * Use the first stream the user has access to if no stream is specified and the user has no global search rights
 * v0.0.3: Small fixes
     * Use accept header in GET requests.
     * Fix bug when querying specific fields

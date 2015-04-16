@@ -22,7 +22,11 @@ def api_from_config(cfg, node_name="default"):
     port = cfg.get(section_name, "port")
     username = cfg.get(section_name, "username")
 
-    return GraylogAPI(host=host, port=port, username=username)
+    default_stream = None
+    if cfg.has_option(section_name, "default_stream"):
+        default_stream = cfg.get(section_name, "default_stream")
+
+    return GraylogAPI(host=host, port=port, username=username, default_stream=default_stream)
 
 
 def api_from_host(host, port, username):
