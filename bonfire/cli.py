@@ -24,7 +24,6 @@ from .graylog_api import SearchRange, SearchQuery
 from .utils import cli_error, api_from_config, api_from_host
 from .output import run_logprint
 from .formats import tail_format, dump_format
-from .ui import run_ui
 
 @click.command()
 @click.option("--node", default=None,  help="Label of a preconfigured graylog node")
