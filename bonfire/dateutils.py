@@ -9,34 +9,34 @@ import parsedatetime.parsedatetime as pdt
 import datetime
 import arrow
 
+
 def datetime_parser(s):
     """
-
-    Parse timestamp in local time
+    Parse timestamp s in local time. First the arrow parser is used, if it fails, the parsedatetime parser is used.
 
     :param s:
     :return:
     """
     try:
-        dt = arrow.get(s)
-        dt = dt.replace(tzinfo='local')
+        ts = arrow.get(s)
+        ts = ts.replace(tzinfo='local')
     except:
         c = pdt.Calendar()
         result, what = c.parse(s)
 
-        dt = None
-        if what in (1, 2):
-            dt = datetime.datetime(*result[:6])
-        elif what == 3:
-            dt = result
+        ts = None
+        if what in (1, 2, 3):
+            ts = datetime.datetime(*result[:6])
 
-        if dt is None:
-            # Failed to parse
-            raise ValueError("Don't understand date '"+s+"'")
 
-        dt = arrow.get(dt)
-        dt = dt.replace(tzinfo='local')
-    return dt
+            ts = arrow.get(ts)
+            ts = ts.replace(tzinfo='local')
+            return ts
+
+    if ts is None:
+         raise ValueError("Cannot parse timestamp '"+s+"'")
+
+    return ts
 
 
 def datetime_converter(dt):

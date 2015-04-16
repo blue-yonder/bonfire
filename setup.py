@@ -514,7 +514,7 @@ def setup_package():
           install_requires=install_reqs,
           setup_requires=['six'],
           cmdclass=cmdclass,
-          tests_require=['pytest-cov', 'pytest'],
+          tests_require=['pytest-cov', 'pytest', 'httpretty'],
           include_package_data=True,
           package_data={package: metadata['package_data']},
           data_files=[('.', metadata['data_files'])],

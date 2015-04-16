@@ -18,7 +18,7 @@ def get_config():
 
     return config
 
-def get_templated_option(cfg, section, option, kwargs):
+def get_templated_option(cfg, section, option, kwargs={}):
     template = Template(cfg.get(section, option))
 
     dt = arrow.now('local')

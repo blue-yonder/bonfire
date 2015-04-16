@@ -57,7 +57,6 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
 
     return format
 
-
 def dump_format(fields=["message", "source", "facility", "line", "module"]):
     def format(entry):
         return ";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f,"")), fields))
