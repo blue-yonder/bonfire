@@ -8,7 +8,6 @@ from __future__ import division, print_function
 import parsedatetime.parsedatetime as pdt
 import datetime
 import arrow
-import pytz
 
 
 def datetime_parser(s):
