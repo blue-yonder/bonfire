@@ -6,14 +6,18 @@ Created on 05.03.15
 
 from __future__ import division, print_function
 
-import ConfigParser
+try:
+    import configparser
+except:
+    from six.moves import configparser
+
 import os
 import keyring
 from string import Template
 import arrow
 
 def get_config():
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.read(['bonfire.cfg', os.path.expanduser('~/.bonfire.cfg')])
 
     return config
