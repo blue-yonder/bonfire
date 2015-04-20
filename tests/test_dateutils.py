@@ -17,6 +17,7 @@ def test_datetime_parser():
         ("1 day ago", lambda x: x.replace(days=-1, microsecond=0, tzinfo='local')),
         ("yesterday midnight", lambda x: x.replace(days=-1, hour=0, minute=0, second=0, microsecond=0, tzinfo='local')),
         ("1986-04-24 00:51:24+02:00", lambda x: arrow.get("1986-04-24 00:51:24+02:00")),
+        ("2001-01-01 01:01:01", lambda x: arrow.get("2001-01-01 01:01:01").replace(tzinfo="local")),
         (now, lambda x: now)]
 
     for (s, ts) in ts_tuples:

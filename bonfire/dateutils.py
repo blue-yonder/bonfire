@@ -8,6 +8,7 @@ from __future__ import division, print_function
 import parsedatetime.parsedatetime as pdt
 import datetime
 import arrow
+import pytz
 
 
 def datetime_parser(s):
@@ -19,7 +20,10 @@ def datetime_parser(s):
     """
     try:
         ts = arrow.get(s)
-        ts = ts.replace(tzinfo='local')
+        # Convert UTC to local, result of get is UTC unless it specifies timezone, bonfire assumes
+        # all time to be machine local
+        if ts.tzinfo == arrow.get().tzinfo:
+            ts = ts.replace(tzinfo='local')
     except:
         c = pdt.Calendar()
         result, what = c.parse(s)
