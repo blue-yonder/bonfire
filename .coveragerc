@@ -2,7 +2,7 @@
 [run]
 branch = True
 source = bonfire
-omit = */_version.py
+omit = */_version.py, */cli.py
 
 [report]
 # Regexes for lines to exclude from consideration
