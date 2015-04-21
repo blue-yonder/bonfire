@@ -98,7 +98,6 @@ class GraylogAPI(object):
             else:
                 params[label] = item
 
-        #print("Querying: {} {}".format(self.base_url + url, params))
         r = requests.get(self.base_url + url, params=params, headers=self.get_header, auth=(self.username, self.password))
 
         if r.status_code == requests.codes.ok:
