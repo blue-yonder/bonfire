@@ -7,6 +7,14 @@ Bonfire is a command line interface to query Graylog searches via the REST API. 
 Usage
 =====
 
+Examples::
+
+    > bonfire --node localhost -u jdoe -@ "10 minutes ago" *
+    ...
+
+    > bonfire --node localhost -u jdoe -f "source:localhost AND level:2"
+    ...
+
 Bonfire usage::
 
     Usage: bonfire [OPTIONS] [QUERY]
@@ -89,6 +97,11 @@ Known Bugs
 Release Notes
 =============
 
+* v0.0.5: Clean up
+    * Removed terminal UI ideas
+    * Added first tests
+    * Fixed date and time handling with timezones
+    * Added python3 compatibility
 * v0.0.4: Extended documentation & stream access
     * Use the first stream the user has access to if no stream is specified and the user has no global search rights
 * v0.0.3: Small fixes
