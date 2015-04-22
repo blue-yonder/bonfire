@@ -36,7 +36,7 @@ class SearchResult(object):
         self.fields = result_dict.get("fields", [])
         self.total_results = result_dict.get("total_results", None)
 
-        self.messages = map(Message, result_dict.get("messages", []))
+        self.messages = list(map(Message, result_dict.get("messages", [])))
 
     def simple_formatted(self):
         return "\n".join(map(lambda m: m.simple_formatted(), self.messages))
