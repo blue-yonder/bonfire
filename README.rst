@@ -9,10 +9,10 @@ Usage
 
 Examples::
 
-    > bonfire --node localhost -u jdoe -@ "10 minutes ago" *
+    > bonfire -h logserver -u jdoe -@ "10 minutes ago" "*"
     ...
 
-    > bonfire --node localhost -u jdoe -f "source:localhost AND level:2"
+    > bonfire -h logserver -u jdoe -f "source:localhost AND level:2"
     ...
 
 Bonfire usage::
@@ -67,7 +67,7 @@ also configure queries which can be referenced by starting your query with a col
     username=jdoe
 
     [query:example]
-    query=facility:*foo* source:*bar*
+    query=facility:*foo* AND source:*bar*
     from=2015-03-01 15:00:00
     limit=100
     fields=message,name,facility,source

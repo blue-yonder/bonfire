@@ -68,7 +68,7 @@ def run(host,
         asc,
         query):
     """
-    Bonfire - An interactive graylog cli client
+    Bonfire - A graylog CLI client
     """
 
     cfg = get_config()
