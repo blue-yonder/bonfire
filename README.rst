@@ -97,6 +97,7 @@ Known Bugs
 Release Notes
 =============
 
+* v0.0.6: Documentation fix
 * v0.0.5: Clean up
     * Removed terminal UI ideas
     * Added first tests
