@@ -53,7 +53,7 @@ class SearchRange(object):
 
     def range_in_seconds(self):
         if self.is_relative():
-            range = (arrow.now('local') - self.from_time).seconds
+            range = arrow.now('local').timestamp - self.from_time.timestamp
         else:
             range = (self.to_time - self.from_time).seconds
 
