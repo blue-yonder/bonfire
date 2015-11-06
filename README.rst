@@ -24,6 +24,7 @@ Bonfire usage::
     Options:
       --node TEXT                     Label of a preconfigured graylog node
       -h, --host TEXT                 Your graylog node's host
+      --tls                  	      Use HTTPS
       --port INTEGER                  Your graylog port (default: 12900)
       -u, --username TEXT             Your graylog username
       -p, --password TEXT             Your graylog password (default: prompt)
