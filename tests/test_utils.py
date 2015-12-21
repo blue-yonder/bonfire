@@ -12,7 +12,8 @@ def test_api_from_host():
     host = "test_host"
     port = 1235
     user = "test"
-    api = api_from_host(host, port, user)
+    scheme = False 
+    api = api_from_host(host, port, user, scheme)
 
     assert api.host == host
     assert api.port == port

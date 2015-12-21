@@ -28,6 +28,7 @@ from .formats import tail_format, dump_format
 @click.command()
 @click.option("--node", default=None,  help="Label of a preconfigured graylog node")
 @click.option("-h", "--host", default=None, help="Your graylog node's host")
+@click.option("-s", "--tls",  default=False, is_flag=True, help="Uses TLS")
 @click.option("--port", default=12900, help="Your graylog port (default: 12900)")
 @click.option("-u", "--username", default=None, help="Your graylog username")
 @click.option("-p", "--password", default=None, help="Your graylog password (default: prompt)")
@@ -50,6 +51,7 @@ from .formats import tail_format, dump_format
 def run(host,
         node,
         port,
+        tls,
         username,
         password,
         keyring,
@@ -83,7 +85,11 @@ def run(host,
             if username is None:
                 username = click.prompt("Enter username for {host}:{port}".format(host=host, port=port),
                                         default=getpass.getuser())
-            gl_api = api_from_host(host=host, port=port, username=username)
+            if tls:
+                scheme = "https"
+            else:
+                scheme = "http"
+            gl_api = api_from_host(host=host, port=port, username=username, scheme=scheme)
         else:
             if cfg.has_section("node:default"):
                 gl_api = api_from_config(cfg)
