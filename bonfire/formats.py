@@ -48,7 +48,7 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
         log = "{level_string}[{timestamp}]{message_text} {field_text}".format(
             timestamp=timestamp.format("YYYY-MM-DD HH:mm:ss.SS"),
             level_string=level_string,
-	    message_text=message_text.encode('UTF-8'),
+            message_text=message_text.encode('UTF-8'),
             field_text="; ".join(field_text))
         if color:
             return colored(log, log_color, log_background)
