@@ -28,7 +28,7 @@ from .formats import tail_format, dump_format
 @click.command()
 @click.option("--node", default=None,  help="Label of a preconfigured graylog node")
 @click.option("-h", "--host", default=None, help="Your graylog node's host")
-@click.option("-s", "--tls",  default=False, is_flag=True, help="Uses TLS")
+@click.option("--tls",  default=False, is_flag=True, help="Uses TLS")
 @click.option("--port", default=12900, help="Your graylog port (default: 12900)")
 @click.option("-u", "--username", default=None, help="Your graylog username")
 @click.option("-p", "--password", default=None, help="Your graylog password (default: prompt)")
