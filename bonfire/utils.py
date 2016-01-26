@@ -7,6 +7,7 @@ Created on 11.03.15
 from __future__ import division, print_function
 import sys
 import click
+import getpass
 from .graylog_api import GraylogAPI
 
 
@@ -20,9 +21,12 @@ def api_from_config(cfg, node_name="default"):
 
     host = cfg.get(section_name, "host")
     port = cfg.get(section_name, "port")
-    username = cfg.get(section_name, "username")
+    if cfg.has_option(section_name, "username"):
+        username = cfg.get(section_name, "username")
+    else:
+        username = getpass.getuser()
 
-    if cfg.get(section_name, "tls"):
+    if cfg.has_option(section_name, "tls") and cfg.get(section_name, "tls"):
         scheme = "https"
     else:
         scheme = "http"
