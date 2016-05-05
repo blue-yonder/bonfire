@@ -40,10 +40,11 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
         if message_text:
             message_text = " " + message_text + " #"
 
-        if "message" in fields:
-            fields.remove("message")
+        local_fields = list(fields)
+        if "message" in local_fields:
+            local_fields.remove("message")
 
-        field_text = map(lambda f: "{}:{}".format(f, entry.message_dict.get(f, "")), fields)
+        field_text = map(lambda f: "{}:{}".format(f, entry.message_dict.get(f, "")), local_fields)
 
         log = "{level_string}[{timestamp}]{message_text} {field_text}".format(
             timestamp=timestamp.format("YYYY-MM-DD HH:mm:ss.SS"),
