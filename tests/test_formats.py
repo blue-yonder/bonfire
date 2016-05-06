@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Created on 16.04.15
 
@@ -5,6 +7,9 @@ Created on 16.04.15
 '''
 
 from __future__ import division, print_function
+
+import six
+
 from bonfire.formats import tail_format, dump_format
 from bonfire.graylog_api import Message
 import arrow
@@ -36,7 +41,7 @@ def run_tail_test_with_formatter_wc(formatter):
     ts = arrow.get()
 
     message = {
-        "message": "Hallo World",
+        "message": "Hällo Wörld, Здравствулте мир, γειά σου κόσμος",
         "source": "a",
         "level": 2,
         "facility": "b",
@@ -45,38 +50,38 @@ def run_tail_test_with_formatter_wc(formatter):
         "timestamp": ts
     }
 
-    result = "\x1b[41m\x1b[37mCRITICAL[{}] Hallo World # source:a; facility:b; line:10; module:c\x1b[0m".format(
+    result = six.u("\x1b[41m\x1b[37mCRITICAL[{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
         ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     )
 
     assert formatter(Message({"message": message})) == result
 
     message["level"] = 3
-    result = "\x1b[31mERROR   [{}] Hallo World # source:a; facility:b; line:10; module:c\x1b[0m".format(
+    result = six.u("\x1b[31mERROR   [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
         ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     )
     assert formatter(Message({"message": message})) == result
 
     message["level"] = 4
-    result = "\x1b[33mWARNING [{}] Hallo World # source:a; facility:b; line:10; module:c\x1b[0m".format(
+    result = six.u("\x1b[33mWARNING [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
         ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     )
     assert formatter(Message({"message": message})) == result
 
     message["level"] = 5
-    result = "\x1b[32mNOTICE  [{}] Hallo World # source:a; facility:b; line:10; module:c\x1b[0m".format(
+    result = six.u("\x1b[32mNOTICE  [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
         ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     )
     assert formatter(Message({"message": message})) == result
 
     message["level"] = 6
-    result = "\x1b[32mINFO    [{}] Hallo World # source:a; facility:b; line:10; module:c\x1b[0m".format(
+    result = six.u("\x1b[32mINFO    [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
         ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     )
     assert formatter(Message({"message": message})) == result
 
     message["level"] = 7
-    result = "\x1b[34mDEBUG   [{}] Hallo World # source:a; facility:b; line:10; module:c\x1b[0m".format(
+    result = six.u("\x1b[34mDEBUG   [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
         ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     )
     assert formatter(Message({"message": message})) == result

@@ -7,6 +7,7 @@ Created on 11.03.15
 from __future__ import division, print_function
 from termcolor import colored
 import syslog
+import six
 
 def tail_format(fields=["source", "facility", "line", "module"], color=True):
     def format(entry):
@@ -46,10 +47,12 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
 
         field_text = map(lambda f: "{}:{}".format(f, entry.message_dict.get(f, "")), local_fields)
 
-        log = "{level_string}[{timestamp}]{message_text} {field_text}".format(
+        message_text = six.u(message_text)
+
+        log = six.u("{level_string}[{timestamp}]{message_text} {field_text}").format(
             timestamp=timestamp.format("YYYY-MM-DD HH:mm:ss.SS"),
             level_string=level_string,
-            message_text=message_text.encode('UTF-8'),
+            message_text=message_text,
             field_text="; ".join(field_text))
         if color:
             return colored(log, log_color, log_background)
