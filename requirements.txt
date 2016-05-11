@@ -1,8 +1,8 @@
-click==3.3
-keyring==5.3
-parsedatetime==1.4
+click>=3.3,<7
+keyring>=9,<10
+parsedatetime>=1.4,<3
 python-dateutil==2.4.1
 requests>=2.4.3,<3.0
-arrow==0.5.4
+arrow>=0.5.4,<0.8
 termcolor==1.1.0
 six==1.9.0
