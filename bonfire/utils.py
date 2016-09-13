@@ -45,6 +45,6 @@ def api_from_config(cfg, node_name="default"):
                       scheme=scheme, proxies=proxies)
 
 
-def api_from_host(host, port, username, scheme, proxies):
+def api_from_host(host, port, username, scheme, proxies=None):
     return GraylogAPI(host=host, port=port, username=username,
                       scheme=scheme, proxies=proxies)
