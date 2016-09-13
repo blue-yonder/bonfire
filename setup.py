@@ -89,7 +89,6 @@ class PyTest(TestCommand):
         params = {"args": self.test_args}
         if self.cov:
             params["args"] += self.cov
-            params["plugins"] = ["cov"]
         if self.junitxml:
             params["args"] += self.junitxml
         errno = pytest.main(**params)
