@@ -9,6 +9,7 @@ from termcolor import colored
 import syslog
 import six
 
+
 def tail_format(fields=["source", "facility", "line", "module"], color=True):
     def format(entry):
         message_text = entry.message
@@ -69,5 +70,6 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
 
 def dump_format(fields=["message", "source", "facility", "line", "module"]):
     def format(entry):
-        return ";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f,"")), fields))
+        timestamp = entry.timestamp.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
+        return timestamp+";"+";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f, "")), fields))
     return format
