@@ -96,6 +96,9 @@ def run(host,
             else:
                 cli_error("Error: No host or node configuration specified and no default found.")
 
+    if username is not None:
+        gl_api.username = username
+
     if keyring and password is None:
         password = get_password_from_keyring(gl_api.host, gl_api.username)
 

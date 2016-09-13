@@ -47,6 +47,12 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
 
         field_text = map(lambda f: "{}:{}".format(f, entry.message_dict.get(f, "")), local_fields)
 
+        if six.PY2:
+            try:
+                message_text = message_text.encode("utf-8")
+            except:
+                pass
+
         message_text = six.u(message_text)
 
         log = six.u("{level_string}[{timestamp}]{message_text} {field_text}").format(

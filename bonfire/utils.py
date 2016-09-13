@@ -21,6 +21,7 @@ def api_from_config(cfg, node_name="default"):
 
     host = cfg.get(section_name, "host")
     port = cfg.get(section_name, "port")
+
     if cfg.has_option(section_name, "username"):
         username = cfg.get(section_name, "username")
     else:

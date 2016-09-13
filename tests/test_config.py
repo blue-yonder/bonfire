@@ -12,6 +12,7 @@ import arrow
 import keyring
 import keyring.backend
 
+
 class TestKeyring(keyring.backend.KeyringBackend):
     """A test keyring which always outputs same password
     """

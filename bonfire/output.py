@@ -33,7 +33,7 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
 
     else:
         result = api.search(query, fetch_all=True)
-        formatted_msgs = map(formatter, result.messages)
+        formatted_msgs = [formatter(m) for m in result.messages]
 
         formatted_msgs.reverse()
 
