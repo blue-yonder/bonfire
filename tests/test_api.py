@@ -33,7 +33,7 @@ def test_search_range():
     assert sr.range_in_seconds() == 10*60
 
     sr = api.SearchRange("10 minutes ago")
-    with pytest.raises(TypeError):
+    with pytest.raises(NotImplementedError):
         sr.range_in_seconds()
 
     sr = api.SearchRange("10 minutes ago", "10 minutes ago")

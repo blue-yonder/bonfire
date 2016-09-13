@@ -16,12 +16,14 @@ import arrow
 
 
 def test_dump_format():
+    ts = arrow.get()
+    ts_str = ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
     formatter = dump_format(["a", "b", "c"])
 
-    assert formatter(Message({"message": {}})) == "'';'';''"
-    assert formatter(Message({"message": {"a": "d"}})) == "'d';'';''"
-    assert formatter(Message({"message": {"a": "d", "b": "e", "c": "f"}})) == "'d';'e';'f'"
-    assert formatter(Message({"message": {"a": "d", "b": "e", "c": "f", "g": "h"}})) == "'d';'e';'f'"
+    assert formatter(Message({"timestamp": ts, "message": {}})) == "{};'';'';''".format(ts_str)
+    assert formatter(Message({"timestamp": ts, "message": {"a": "d"}})) == "{};'d';'';''".format(ts_str)
+    assert formatter(Message({"timestamp": ts, "message": {"a": "d", "b": "e", "c": "f"}})) == "{};'d';'e';'f'".format(ts_str)
+    assert formatter(Message({"timestamp": ts, "message": {"a": "d", "b": "e", "c": "f", "g": "h"}})) == "{};'d';'e';'f'".format(ts_str)
 
 
 def test_tail_format():
