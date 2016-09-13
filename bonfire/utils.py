@@ -32,12 +32,19 @@ def api_from_config(cfg, node_name="default"):
     else:
         scheme = "http"
 
+    if cfg.has_option(section_name, "proxy"):
+        proxies = {scheme: cfg.get(section_name, "proxy")}
+    else:
+        proxies = None
+
     default_stream = None
     if cfg.has_option(section_name, "default_stream"):
         default_stream = cfg.get(section_name, "default_stream")
 
-    return GraylogAPI(host=host, port=port, username=username, default_stream=default_stream, scheme=scheme)
+    return GraylogAPI(host=host, port=port, username=username, default_stream=default_stream,
+                      scheme=scheme, proxies=proxies)
 
 
-def api_from_host(host, port, username, scheme):
-    return GraylogAPI(host=host, port=port, username=username, scheme=scheme)
+def api_from_host(host, port, username, scheme, proxies):
+    return GraylogAPI(host=host, port=port, username=username,
+                      scheme=scheme, proxies=proxies)

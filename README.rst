@@ -98,8 +98,12 @@ Known Bugs
 Release Notes
 =============
 
-* v0.0.7: TLS support
+* v0.0.7: Issues fixes, TLS and Proxy support
+    * Adds support for proxies
+    * Adds support for https urls
+    * Add timestamps to the dump format
 * v0.0.6: Documentation fix
+    * Change of README.rst
 * v0.0.5: Clean up
     * Removed terminal UI ideas
     * Added first tests
@@ -110,4 +114,5 @@ Release Notes
 * v0.0.3: Small fixes
     * Use accept header in GET requests.
     * Fix bug when querying specific fields
-* v0.0.1: Initial release, limited feature set.
+* v0.0.1: Initial release
+    * Limited feature set.

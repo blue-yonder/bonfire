@@ -47,6 +47,7 @@ from .formats import tail_format, dump_format
 @click.option('--template-option', '-x', multiple=True, help="Template options for the stored query")
 @click.option('--sort', '-s', default=None, help="Field used for sorting (default: timestamp)")
 @click.option("--asc/--desc", default=False, help="Sort ascending / descending")
+@click.option("--proxy", default=None, help="Proxy to use for the http/s request")
 @click.argument('query', default="*")
 def run(host,
         node,
@@ -68,6 +69,7 @@ def run(host,
         template_option,
         sort,
         asc,
+        proxy,
         query):
     """
     Bonfire - A graylog CLI client
@@ -89,7 +91,13 @@ def run(host,
                 scheme = "https"
             else:
                 scheme = "http"
-            gl_api = api_from_host(host=host, port=port, username=username, scheme=scheme)
+
+            if proxy:
+                proxies = {scheme: proxy}
+            else:
+                proxies = None
+
+            gl_api = api_from_host(host=host, port=port, username=username, scheme=scheme, proxies=proxies)
         else:
             if cfg.has_section("node:default"):
                 gl_api = api_from_config(cfg)
