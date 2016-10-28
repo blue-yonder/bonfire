@@ -95,9 +95,9 @@ class GraylogAPI(object):
             self.base_url += end_point.strip('/') + '/'
 
     def __str__(self):
-        name = "{host}:{port}/".format(host=self.host, port=self.port)
+        name = "{host}:{port}".format(host=self.host, port=self.port)
         if self.end_point is not None:
-            name += self.end_point.strip('/')
+            name += '/' + self.end_point.strip('/')
         return name
 
     def get(self, url, **kwargs):

@@ -93,6 +93,16 @@ def generate_search_result(total_results=1000):
     return result.format(total_results=total_results)
 
 
+def test_graylog_api_str():
+    g = api.GraylogAPI("dummyhost", 80,  None, "dummy", password="dummy")
+    assert str(g) == 'dummyhost:80'
+
+    g = api.GraylogAPI("dummyhost", 80, 'api', "dummy", password="dummy")
+    assert str(g) == 'dummyhost:80/api'
+
+    g = api.GraylogAPI("dummyhost", 80, '/api/', "dummy", password="dummy")
+    assert str(g) == 'dummyhost:80/api'
+
 @httpretty.activate
 def test_graylog_api_search():
     httpretty.register_uri(httpretty.GET, "http://dummyhost:80/search/universal/absolute",
