@@ -21,6 +21,7 @@ def api_from_config(cfg, node_name="default"):
 
     host = cfg.get(section_name, "host")
     port = cfg.get(section_name, "port")
+    end_point = cfg.get(section_name, "end_point")
 
     if cfg.has_option(section_name, "username"):
         username = cfg.get(section_name, "username")
@@ -41,10 +42,10 @@ def api_from_config(cfg, node_name="default"):
     if cfg.has_option(section_name, "default_stream"):
         default_stream = cfg.get(section_name, "default_stream")
 
-    return GraylogAPI(host=host, port=port, username=username, default_stream=default_stream,
+    return GraylogAPI(host=host, port=port, end_point=end_point, username=username, default_stream=default_stream,
                       scheme=scheme, proxies=proxies)
 
 
-def api_from_host(host, port, username, scheme, proxies=None):
-    return GraylogAPI(host=host, port=port, username=username,
+def api_from_host(host, port, end_point, username, scheme, proxies=None):
+    return GraylogAPI(host=host, port=port, end_point=end_point, username=username,
                       scheme=scheme, proxies=proxies)

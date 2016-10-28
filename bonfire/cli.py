@@ -30,6 +30,7 @@ from .formats import tail_format, dump_format
 @click.option("-h", "--host", default=None, help="Your graylog node's host")
 @click.option("--tls",  default=False, is_flag=True, help="Uses TLS")
 @click.option("--port", default=12900, help="Your graylog port (default: 12900)")
+@click.option("--end-point", default=None, help="Your graylog API endpoint e.g /api (default: None)")
 @click.option("-u", "--username", default=None, help="Your graylog username")
 @click.option("-p", "--password", default=None, help="Your graylog password (default: prompt)")
 @click.option("-k/-nk", "--keyring/--no-keyring", default=False, help="Use keyring to store/retrieve password")
@@ -52,6 +53,7 @@ from .formats import tail_format, dump_format
 def run(host,
         node,
         port,
+        end_point,
         tls,
         username,
         password,
@@ -97,7 +99,7 @@ def run(host,
             else:
                 proxies = None
 
-            gl_api = api_from_host(host=host, port=port, username=username, scheme=scheme, proxies=proxies)
+            gl_api = api_from_host(host=host, port=port, end_point=end_point, username=username, scheme=scheme, proxies=proxies)
         else:
             if cfg.has_section("node:default"):
                 gl_api = api_from_config(cfg)
@@ -111,8 +113,8 @@ def run(host,
         password = get_password_from_keyring(gl_api.host, gl_api.username)
 
     if password is None:
-        password = click.prompt("Enter password for {username}@{host}:{port}".format(
-            username=gl_api.username, host=gl_api.host, port=gl_api.port), hide_input=True)
+        password = click.prompt("Enter password for {username}@{api}".format(
+            username=gl_api.username, api=gl_api), hide_input=True)
 
     gl_api.password = password
 

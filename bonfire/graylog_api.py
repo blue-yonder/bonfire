@@ -79,9 +79,10 @@ class SearchQuery(object):
 
 
 class GraylogAPI(object):
-    def __init__(self, host, port, username, password=None, host_tz='utc', default_stream=None, scheme='http', proxies=None):
+    def __init__(self, host, port, end_point, username, password=None, host_tz='utc', default_stream=None, scheme='http', proxies=None):
         self.host = host
         self.port = port
+        self.end_point = end_point
         self.username = username
         self.password = password
         self.host_tz = host_tz
@@ -90,6 +91,14 @@ class GraylogAPI(object):
 
         self.get_header = {"Accept": "application/json"}
         self.base_url = "{scheme}://{host}:{port}/".format(host=host, port=port, scheme=scheme)
+        if end_point is not None:
+            self.base_url += end_point.strip('/') + '/'
+
+    def __str__(self):
+        name = "{host}:{port}/".format(host=self.host, port=self.port)
+        if self.end_point is not None:
+            name += self.end_point.strip('/')
+        return name
 
     def get(self, url, **kwargs):
         params = {}
