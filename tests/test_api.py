@@ -100,7 +100,7 @@ def test_graylog_api_search():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, None, "dummy", password="dummy")
     sr = api.SearchRange("10 minutes ago", arrow.now())
     q = api.SearchQuery(sr)
     result = g.search(q)
@@ -124,13 +124,28 @@ def test_graylog_api_search():
 
 
 @httpretty.activate
+def test_graylog_endpoint_api_search():
+    httpretty.register_uri(httpretty.GET, "http://dummyhost:80/api/search/universal/absolute",
+                           body=generate_search_result(),
+                           content_type="application/json")
+
+    # More of some dummy tests now
+    g = api.GraylogAPI("dummyhost", 80, 'api', "dummy", password="dummy")
+    sr = api.SearchRange("10 minutes ago", arrow.now())
+    q = api.SearchQuery(sr)
+    result = g.search(q)
+    assert len(result.messages) == 1
+    assert result.query == "*"
+
+
+@httpretty.activate
 def test_to_many_results():
     httpretty.register_uri(httpretty.GET, "http://dummyhost:80/search/universal/absolute",
                            body=generate_search_result(1000000),
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, None, "dummy", password="dummy")
     sr = api.SearchRange("10 minutes ago", arrow.now())
     q = api.SearchQuery(sr)
 
@@ -145,7 +160,7 @@ def test_userinfo():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, None, "dummy", password="dummy")
 
     result = g.user_info("testuser")
     expected = {"someuser" : "info" }
@@ -159,7 +174,7 @@ def test_streams():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, None,  "dummy", password="dummy")
 
     result = g.streams()
     expected = [{"somestream" : "a" }]
