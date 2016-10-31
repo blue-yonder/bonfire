@@ -18,19 +18,19 @@ import click
 import getpass
 import arrow
 
-
 from .config import get_config, get_password_from_keyring, store_password_in_keyring, get_templated_option
 from .graylog_api import SearchRange, SearchQuery
 from .utils import cli_error, api_from_config, api_from_host
 from .output import run_logprint
 from .formats import tail_format, dump_format
 
+
 @click.command()
-@click.option("--node", default=None,  help="Label of a preconfigured graylog node")
+@click.option("--node", default=None, help="Label of a preconfigured graylog node")
 @click.option("-h", "--host", default=None, help="Your graylog node's host")
-@click.option("--tls",  default=False, is_flag=True, help="Uses TLS")
+@click.option("--tls", default=False, is_flag=True, help="Uses TLS")
 @click.option("--port", default=12900, help="Your graylog port (default: 12900)")
-@click.option("--end-point", default=None, help="Your graylog API endpoint e.g /api (default: None)")
+@click.option("--endpoint", default="/", help="Your graylog API endpoint e.g /api (default: /)")
 @click.option("-u", "--username", default=None, help="Your graylog username")
 @click.option("-p", "--password", default=None, help="Your graylog password (default: prompt)")
 @click.option("-k/-nk", "--keyring/--no-keyring", default=False, help="Use keyring to store/retrieve password")
@@ -53,7 +53,7 @@ from .formats import tail_format, dump_format
 def run(host,
         node,
         port,
-        end_point,
+        endpoint,
         tls,
         username,
         password,
@@ -99,7 +99,8 @@ def run(host,
             else:
                 proxies = None
 
-            gl_api = api_from_host(host=host, port=port, end_point=end_point, username=username, scheme=scheme, proxies=proxies)
+            gl_api = api_from_host(host=host, port=port, endpoint=endpoint, username=username, scheme=scheme,
+                                   proxies=proxies)
         else:
             if cfg.has_section("node:default"):
                 gl_api = api_from_config(cfg)
@@ -165,7 +166,7 @@ def run(host,
     if follow:
         limit = None
         sort = None
-        sr.from_time = arrow.now('local').replace(seconds=-latency-1)
+        sr.from_time = arrow.now('local').replace(seconds=-latency - 1)
         sr.to_time = arrow.now('local').replace(seconds=-latency)
 
     # Get the user permissions
@@ -184,7 +185,8 @@ def run(host,
         stream_filter = "streams:{}".format(stream)
 
     # Create the initial query object
-    q = SearchQuery(search_range=sr, query=query, limit=limit, filter=stream_filter, fields=fields, sort=sort, ascending=asc)
+    q = SearchQuery(search_range=sr, query=query, limit=limit, filter=stream_filter, fields=fields, sort=sort,
+                    ascending=asc)
 
     # Check the mode in which the program should run (dump, tail or interactive mode)
     if mode == "tail":
@@ -196,6 +198,7 @@ def run(host,
         formatter = dump_format()
 
     run_logprint(gl_api, q, formatter, follow, interval, latency, output)
+
 
 if __name__ == "__main__":
     run()

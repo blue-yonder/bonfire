@@ -32,13 +32,12 @@ def datetime_parser(s):
         if what in (1, 2, 3):
             ts = datetime.datetime(*result[:6])
 
-
             ts = arrow.get(ts)
             ts = ts.replace(tzinfo='local')
             return ts
 
     if ts is None:
-         raise ValueError("Cannot parse timestamp '"+s+"'")
+        raise ValueError("Cannot parse timestamp '" + s + "'")
 
     return ts
 

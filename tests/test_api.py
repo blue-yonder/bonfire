@@ -18,19 +18,21 @@ def test_message():
     expected = "[{}] 1: Test".format(ts)
     assert m.simple_formatted() == expected
 
+
 def test_search_result():
     ts = arrow.now()
-    messages = [{"message": {"message": "Test", "timestamp": ts, "level": 1}}]*3
+    messages = [{"message": {"message": "Test", "timestamp": ts, "level": 1}}] * 3
     expected = "[{}] 1: Test".format(ts)
     sr = api.SearchResult({"messages": messages})
-    assert sr.simple_formatted() == "\n".join([expected]*3)
+    assert sr.simple_formatted() == "\n".join([expected] * 3)
+
 
 def test_search_range():
     sr = api.SearchRange("10 minutes ago", arrow.now())
-    assert sr.range_in_seconds() == 10*60
+    assert sr.range_in_seconds() == 10 * 60
 
     sr = api.SearchRange("10 minutes ago", relative=True)
-    assert sr.range_in_seconds() == 10*60
+    assert sr.range_in_seconds() == 10 * 60
 
     sr = api.SearchRange("10 minutes ago")
     with pytest.raises(Exception):
@@ -38,6 +40,7 @@ def test_search_range():
 
     sr = api.SearchRange("10 minutes ago", "10 minutes ago")
     assert sr.range_in_seconds() == 1
+
 
 def generate_search_result(total_results=1000):
     result = """{{
@@ -94,7 +97,7 @@ def generate_search_result(total_results=1000):
 
 
 def test_graylog_api_str():
-    g = api.GraylogAPI("dummyhost", 80,  None, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
     assert str(g) == 'dummyhost:80'
 
     g = api.GraylogAPI("dummyhost", 80, 'api', "dummy", password="dummy")
@@ -103,6 +106,7 @@ def test_graylog_api_str():
     g = api.GraylogAPI("dummyhost", 80, '/api/', "dummy", password="dummy")
     assert str(g) == 'dummyhost:80/api'
 
+
 @httpretty.activate
 def test_graylog_api_search():
     httpretty.register_uri(httpretty.GET, "http://dummyhost:80/search/universal/absolute",
@@ -110,7 +114,7 @@ def test_graylog_api_search():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, None, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
     sr = api.SearchRange("10 minutes ago", arrow.now())
     q = api.SearchQuery(sr)
     result = g.search(q)
@@ -155,7 +159,7 @@ def test_to_many_results():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, None, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
     sr = api.SearchRange("10 minutes ago", arrow.now())
     q = api.SearchQuery(sr)
 
@@ -170,10 +174,10 @@ def test_userinfo():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, None, "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
 
     result = g.user_info("testuser")
-    expected = {"someuser" : "info" }
+    expected = {"someuser": "info"}
     assert result == expected
 
 
@@ -184,8 +188,8 @@ def test_streams():
                            content_type="application/json")
 
     # More of some dummy tests now
-    g = api.GraylogAPI("dummyhost", 80, None,  "dummy", password="dummy")
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
 
     result = g.streams()
-    expected = [{"somestream" : "a" }]
+    expected = [{"somestream": "a"}]
     assert result == expected
