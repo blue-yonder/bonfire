@@ -26,6 +26,8 @@ Bonfire usage::
       -h, --host TEXT                 Your graylog node's host
       -s, --tls                       Use HTTPS
       --port INTEGER                  Your graylog port (default: 12900)
+      --endpoint TEXT                 Your graylog API endpoint e.g /api (default:
+                                      /)
       -u, --username TEXT             Your graylog username
       -p, --password TEXT             Your graylog password (default: prompt)
       -k, --keyring / -nk, --no-keyring
@@ -60,11 +62,13 @@ also configure queries which can be referenced by starting your query with a col
     [node:default]
     host=1.2.3.4
     port=12900
+    endpoint=/
     username=jdoe
 
     [node:dev]
     host=4.3.2.1
-    port=12900
+    port=9000
+    endpoint=/api
     username=jdoe
 
     [query:example]

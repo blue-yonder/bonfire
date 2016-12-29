@@ -9,6 +9,7 @@ from bonfire.dateutils import datetime_parser, datetime_converter
 import arrow
 import pytest
 
+
 def test_datetime_parser():
     now = arrow.now()
 

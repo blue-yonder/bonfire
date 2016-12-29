@@ -63,7 +63,8 @@ class SearchRange(object):
 
 
 class SearchQuery(object):
-    def __init__(self, search_range, query="*", limit=None, offset=None, filter=None, fields=None, sort=None, ascending=False):
+    def __init__(self, search_range, query="*", limit=None, offset=None, filter=None, fields=None, sort=None,
+                 ascending=False):
         self.search_range = search_range
         self.query = query
         self.limit = limit
@@ -74,14 +75,19 @@ class SearchQuery(object):
         self.ascending = ascending
 
     def copy_with_range(self, search_range):
-        q = SearchQuery(search_range, self.query, self.limit, self.offset, self.filter, self.fields, self.sort, self.ascending)
+        q = SearchQuery(search_range, self.query, self.limit, self.offset, self.filter, self.fields, self.sort,
+                        self.ascending)
         return q
 
 
 class GraylogAPI(object):
-    def __init__(self, host, port, username, password=None, host_tz='utc', default_stream=None, scheme='http', proxies=None):
+    def __init__(self, host, port, endpoint, username, password=None, host_tz='utc', default_stream=None, scheme='http',
+                 proxies=None):
+        endpoint = '/' + endpoint.strip('/')
+
         self.host = host
         self.port = port
+        self.endpoint = endpoint
         self.username = username
         self.password = password
         self.host_tz = host_tz
@@ -89,7 +95,16 @@ class GraylogAPI(object):
         self.proxies = proxies
 
         self.get_header = {"Accept": "application/json"}
-        self.base_url = "{scheme}://{host}:{port}/".format(host=host, port=port, scheme=scheme)
+        self.base_url = "{scheme}://{host}:{port}{endpoint}".format(host=host, port=port, scheme=scheme,
+                                                                    endpoint=endpoint)
+        if self.base_url[-1] != '/':
+            self.base_url += '/'
+
+    def __str__(self):
+        name = "{host}:{port}".format(host=self.host, port=self.port)
+        if self.endpoint != '/':
+            name += self.endpoint
+        return name
 
     def get(self, url, **kwargs):
         params = {}
@@ -100,7 +115,8 @@ class GraylogAPI(object):
             else:
                 params[label] = item
 
-        r = requests.get(self.base_url + url, params=params, headers=self.get_header, auth=(self.username, self.password), proxies=self.proxies)
+        r = requests.get(self.base_url + url, params=params, headers=self.get_header,
+                         auth=(self.username, self.password), proxies=self.proxies)
 
         if r.status_code == requests.codes.ok:
             return r.json()

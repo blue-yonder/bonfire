@@ -68,8 +68,10 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
 
     return format
 
+
 def dump_format(fields=["message", "source", "facility", "line", "module"]):
     def format(entry):
         timestamp = entry.timestamp.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-        return timestamp+";"+";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f, "")), fields))
+        return timestamp + ";" + ";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f, "")), fields))
+
     return format

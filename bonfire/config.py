@@ -16,11 +16,13 @@ import keyring
 from string import Template
 import arrow
 
+
 def get_config():
     config = configparser.ConfigParser()
     config.read(['bonfire.cfg', os.path.expanduser('~/.bonfire.cfg')])
 
     return config
+
 
 def get_templated_option(cfg, section, option, kwargs={}):
     template = Template(cfg.get(section, option))
@@ -34,6 +36,7 @@ def get_templated_option(cfg, section, option, kwargs={}):
     }
 
     return template.substitute(mapping, **kwargs)
+
 
 def store_password_in_keyring(host, username, password):
     keyring.set_password('bonfire_' + host, username, password)

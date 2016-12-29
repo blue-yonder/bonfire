@@ -13,7 +13,6 @@ import os
 import inspect
 from sphinx import apidoc
 
-
 __location__ = os.path.join(os.getcwd(), os.path.dirname(
     inspect.getfile(inspect.currentframe())))
 
@@ -189,7 +188,6 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'bonfire-doc'
-
 
 # -- Options for LaTeX output --------------------------------------------------
 
