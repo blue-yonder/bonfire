@@ -134,7 +134,7 @@ class GraylogAPI(object):
         if fetch_all and query.limit is None:
             result = self.search_raw(query.query, query.search_range, 1, query.offset,
                                      query.filter, query.fields, sort)
- 
+
             sr = SearchRange(from_time=result.range_from, to_time=result.range_to)
 
             if result.total_results > 10000:
