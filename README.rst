@@ -69,6 +69,7 @@ also configure queries which can be referenced by starting your query with a col
     port=9000
     endpoint=/api
     username=jdoe
+    password=H4rrH4rrB0bba
 
     [query:example]
     query=facility:*foo* AND source:*bar*
