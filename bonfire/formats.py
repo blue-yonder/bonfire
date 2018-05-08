@@ -46,7 +46,7 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
         if "message" in local_fields:
             local_fields.remove("message")
 
-        field_text = map(lambda f: "{}:{}".format(f, entry.message_dict.get(f, "")), local_fields)
+        field_text = map(lambda f: u"{}:{}".format(f, entry.message_dict.get(f, "")), local_fields)
 
         if six.PY2:
             try:
@@ -72,6 +72,6 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
 def dump_format(fields=["message", "source", "facility", "line", "module"]):
     def format(entry):
         timestamp = entry.timestamp.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-        return timestamp + ";" + ";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f, "")), fields))
+        return timestamp + ";" + ";".join(map(lambda f: u"'{val}'".format(val=entry.message_dict.get(f, "")), fields))
 
     return format
