@@ -107,14 +107,15 @@ def run(host,
     if username is not None:
         gl_api.username = username
 
-    if keyring and password is None:
+    if keyring and password is None and gl_api.password is None:
         password = get_password_from_keyring(gl_api.host, gl_api.username)
 
-    if password is None:
+    if password is None and gl_api.password is None:
         password = click.prompt("Enter password for {username}@{api}".format(
             username=gl_api.username, api=gl_api), hide_input=True)
 
-    gl_api.password = password
+    if gl_api.password is None:
+        gl_api.password = password
 
     if keyring:
         store_password_in_keyring(gl_api.host, gl_api.username, password)
