@@ -7,6 +7,8 @@ Created on 11.03.15
 from __future__ import division, print_function
 import time
 import arrow
+import sys
+from kitchen.text.converters import getwriter
 from .graylog_api import SearchRange
 
 
@@ -40,13 +42,14 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
         formatted_msgs.reverse()
 
         if output is None:
-            for msg in formatted_msgs:
-                print(msg)
+            output = sys.stdout
+            output = getwriter('utf8')(output)
+        if isinstance(output, basestring):
+            with getwriter('utf8')(open(output, "a")) as f:
+                for msg in formatted_msgs:
+                    print(msg, file=f)
         else:
-            if isinstance(output, basestring):
-                with open(output, "a") as f:
-                    f.writelines(formatted_msgs)
-            else:
-                output.writelines(formatted_msgs)
+            for msg in formatted_msgs:
+                print(msg, file=output)
 
         return result
