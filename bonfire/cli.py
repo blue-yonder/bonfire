@@ -196,7 +196,10 @@ def run(host,
         else:
             formatter = tail_format()
     elif mode == "dump":
-        formatter = dump_format()
+        if fields:
+            formatter = dump_format(fields)
+        else:
+            formatter = dump_format()
 
     run_logprint(gl_api, q, formatter, follow, interval, latency, output)
 
