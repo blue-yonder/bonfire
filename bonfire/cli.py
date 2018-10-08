@@ -38,7 +38,7 @@ from .formats import tail_format, dump_format
 @click.option("-#", "--search-to", default=None, help="Query range to (default: now)")
 @click.option('-t', '--tail', 'mode', flag_value='tail', default=True, help="Show the last n lines for the query (default)")
 @click.option('-d', '--dump', 'mode', flag_value='dump', help="Print the query result as a csv")
-@click.option("-f", "--follow", default=False, is_flag=True, help="Poll the logging server for new logs matching the query (sets search from to now, limit to None)")
+@click.option("-f", "--follow", default=False, is_flag=True, help="Poll the logging server for new logs matching the query (sets search from to 10 minutes ago, limit to None)")
 @click.option("-l", "--interval", default=1000, help="Polling interval in ms (default: 1000)")
 @click.option("-n", "--limit", default=10, help="Limit the number of results (default: 10)")
 @click.option("-a", "--latency", default=2, help="Latency of polling queries (default: 2)")
@@ -161,11 +161,12 @@ def run(host,
     if limit <= 0:
         limit = None
 
-    # Set limit to None, sort to none and start time to now, if follow is active
+    # Set limit to None, sort to none and start time to 10 min ago, if follow
+    # is active
     if follow:
         limit = None
         sort = None
-        sr.from_time = arrow.now('local').replace(seconds=-latency - 1)
+        sr.from_time = arrow.now('local').replace(seconds=-latency - 600)
         sr.to_time = arrow.now('local').replace(seconds=-latency)
 
     # Get the user permissions
