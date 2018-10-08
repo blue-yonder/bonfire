@@ -13,13 +13,11 @@ from .graylog_api import SearchRange
 
 
 def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, output=None, header=None):
+    if output is None:
+        output = getwriter('utf8')(sys.stdout)
+
     if follow:
         assert query.limit is None
-
-        close_output = False
-        if output is not None and isinstance(output, basestring):
-            output = open(output, "a")
-            close_output = True
 
         try:
             while True:
@@ -32,24 +30,12 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
         except KeyboardInterrupt:
             print("\nInterrupted follow mode. Exiting...")
 
-        if close_output:
-            output.close()
-
     else:
         result = api.search(query, fetch_all=True)
         formatted_msgs = [formatter(m) for m in result.messages]
-
         formatted_msgs.reverse()
 
-        if output is None:
-            output = sys.stdout
-            output = getwriter('utf8')(output)
-        if isinstance(output, basestring):
-            with getwriter('utf8')(open(output, "a")) as f:
-                for msg in formatted_msgs:
-                    print(msg, file=f)
-        else:
-            for msg in formatted_msgs:
-                print(msg, file=output)
+        for msg in formatted_msgs:
+            print(msg, file=output)
 
         return result

@@ -38,7 +38,6 @@ from .formats import tail_format, dump_format
 @click.option("-#", "--search-to", default=None, help="Query range to (default: now)")
 @click.option('-t', '--tail', 'mode', flag_value='tail', default=True, help="Show the last n lines for the query (default)")
 @click.option('-d', '--dump', 'mode', flag_value='dump', help="Print the query result as a csv")
-@click.option('-o', '--output', default=None, help="Output logs to file (only tail/dump mode)")
 @click.option("-f", "--follow", default=False, is_flag=True, help="Poll the logging server for new logs matching the query (sets search from to now, limit to None)")
 @click.option("-l", "--interval", default=1000, help="Polling interval in ms (default: 1000)")
 @click.option("-n", "--limit", default=10, help="Limit the number of results (default: 10)")
@@ -61,7 +60,6 @@ def run(host,
         search_from,
         search_to,
         mode,
-        output,
         follow,
         interval,
         limit,
@@ -195,7 +193,7 @@ def run(host,
     elif mode == "dump":
         formatter = dump_format(fields)
 
-    run_logprint(gl_api, q, formatter, follow, interval, latency, output)
+    run_logprint(gl_api, q, formatter, follow, interval, latency)
 
 
 if __name__ == "__main__":
