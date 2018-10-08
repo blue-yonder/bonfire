@@ -95,8 +95,8 @@ class GraylogAPI(object):
         self.proxies = proxies
 
         self.get_header = {"Accept": "application/json"}
-        self.base_url = "{scheme}://{host}:{port}{endpoint}".format(host=host, port=port, scheme=scheme,
-                                                                    endpoint=endpoint)
+        self.base_url = "{scheme}://{host}:{port}{endpoint}".format(host=host,
+                port=port, scheme=scheme, endpoint=endpoint)
         if self.base_url[-1] != '/':
             self.base_url += '/'
 
@@ -115,8 +115,9 @@ class GraylogAPI(object):
             else:
                 params[label] = item
 
-        r = requests.get(self.base_url + url, params=params, headers=self.get_header,
-                         auth=(self.username, self.password), proxies=self.proxies)
+        r = requests.get(self.base_url + url, params=params,
+                headers=self.get_header, auth=(self.username, self.password),
+                proxies=self.proxies)
 
         if r.status_code == requests.codes.ok:
             return r.json()
@@ -140,12 +141,13 @@ class GraylogAPI(object):
             if result.total_results > 10000:
                 raise RuntimeError("Query returns more than 10000 log entries. Use offsets to query in chunks.")
 
-            result = self.search_raw(query.query, sr, result.total_results, query.offset,
-                                     query.filter, query.fields, sort)
+            result = self.search_raw(query.query, sr, result.total_results,
+                    query.offset, query.filter, query.fields, sort)
 
         else:
-            result = self.search_raw(query.query, query.search_range, query.limit, query.offset,
-                                     query.filter, query.fields, sort)
+            result = self.search_raw(query.query, query.search_range,
+                    query.limit, query.offset, query.filter, query.fields,
+                    sort)
 
         result.query_object = query
         return result
@@ -158,7 +160,8 @@ class GraylogAPI(object):
         url = "streams"
         return self.get(url=url)
 
-    def search_raw(self, query, search_range, limit=None, offset=None, filter=None, fields=None, sort=None):
+    def search_raw(self, query, search_range, limit=None, offset=None,
+            filter=None, fields=None, sort=None):
         url = "search/universal/"
         range_args = {}
 

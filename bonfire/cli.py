@@ -186,8 +186,8 @@ def run(host,
         stream_filter = "streams:{}".format(stream)
 
     # Create the initial query object
-    q = SearchQuery(search_range=sr, query=query, limit=limit, filter=stream_filter, fields=fields, sort=sort,
-                    ascending=asc)
+    q = SearchQuery(search_range=sr, query=query, limit=limit,
+            filter=stream_filter, fields=fields, sort=sort, ascending=asc)
 
     # Check the mode in which the program should run (dump, tail or interactive mode)
     if mode == "tail":
