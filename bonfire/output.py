@@ -17,14 +17,13 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
         output = getwriter('utf8')(sys.stdout)
 
     if follow:
-        assert query.limit is None
-
         try:
             while True:
                 result = run_logprint(api, query, formatter, follow=False, output=output)
                 new_range = SearchRange(from_time=result.range_to,
                         to_time=result.range_to.replace(seconds=+1))
                 query = query.copy_with_range(new_range)
+                query.limit = None
 
                 time.sleep(interval / 1000.0)
         except KeyboardInterrupt:

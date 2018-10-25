@@ -161,10 +161,10 @@ def run(host,
     if limit <= 0:
         limit = None
 
-    # Set limit to None, sort to none and start time to 10 min ago, if follow
+    # Set limit to 10000, sort to none and start time to 5 min ago, if follow
     # is active
     if follow:
-        limit = None
+        limit = 10000
         sort = None
         sr.from_time = arrow.now('local').replace(seconds=-latency - 600)
         sr.to_time = arrow.now('local').replace(seconds=-latency)
