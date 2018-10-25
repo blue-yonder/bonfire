@@ -43,7 +43,7 @@ from .formats import tail_format, dump_format
 @click.option("-n", "--limit", default=10, help="Limit the number of results (default: 10)")
 @click.option("-a", "--latency", default=2, help="Latency of polling queries (default: 2)")
 @click.option("-r", "--stream", default=None, help="Stream ID of the stream to query (default: no stream filter)")
-@click.option('--field', '-e', multiple=True, help="Fields to include in the query result", default=["message", "source", "facility", "line", "module"])
+@click.option('--field', '-e', multiple=True, help="Fields to include in the query result", default=["message"])
 @click.option('--template-option', '-x', multiple=True, help="Template options for the stored query")
 @click.option('--sort', '-s', default=None, help="Field used for sorting (default: timestamp)")
 @click.option("--asc/--desc", default=False, help="Sort ascending / descending")
