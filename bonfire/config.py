@@ -4,12 +4,7 @@ Created on 05.03.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
-
-try:
-    import configparser
-except:
-    from six.moves import configparser
+import configparser
 
 import os
 import keyring

@@ -4,7 +4,6 @@ Created on 11.03.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
 import time
 import arrow
 from .graylog_api import SearchRange

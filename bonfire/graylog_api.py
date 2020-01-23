@@ -4,11 +4,9 @@ Created on 05.03.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
 import requests
 import arrow
 import syslog
-import six
 
 from .dateutils import datetime_converter
 
@@ -109,7 +107,7 @@ class GraylogAPI(object):
     def get(self, url, **kwargs):
         params = {}
 
-        for label, item in six.iteritems(kwargs):
+        for label, item in kwargs.items():
             if isinstance(item, list):
                 params[label + "[]"] = item
             else:

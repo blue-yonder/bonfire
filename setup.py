@@ -23,13 +23,8 @@ import setuptools
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
-# For Python 2/3 compatibility, pity we can't use six.moves here
-try:  # try Python 3 imports first
-    import configparser
-    from io import StringIO
-except ImportError:  # then fall back to Python 2
-    import ConfigParser as configparser
-    from StringIO import StringIO
+import configparser
+from io import StringIO
 
 __location__ = os.path.join(os.getcwd(), os.path.dirname(
     inspect.getfile(inspect.currentframe())))

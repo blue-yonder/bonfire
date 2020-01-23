@@ -6,7 +6,6 @@ Created on 16.04.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
 
 import six
 

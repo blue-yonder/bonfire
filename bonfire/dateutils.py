@@ -4,11 +4,9 @@ Created on 11.03.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
 import parsedatetime.parsedatetime as pdt
 import datetime
 import arrow
-import six
 
 
 def datetime_parser(s):
@@ -45,7 +43,7 @@ def datetime_parser(s):
 def datetime_converter(dt):
     if dt is None:
         return None
-    elif isinstance(dt, six.string_types):
+    elif isinstance(dt, str):
         return datetime_parser(dt)
     else:
         return arrow.get(dt)
