@@ -161,9 +161,9 @@ def str2bool(val):
 
 
 def read_setup_cfg():
-    config = configparser.SafeConfigParser(allow_no_value=True)
+    config = configparser.ConfigParser(allow_no_value=True)
     config_file = StringIO(read(os.path.join(__location__, 'setup.cfg')))
-    config.readfp(config_file)
+    config.read_file(config_file)
     metadata = dict(config.items('metadata'))
     classifiers = metadata.get('classifiers', '')
     metadata['classifiers'] = [item.strip() for item in classifiers.split(',')]
