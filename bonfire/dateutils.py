@@ -11,15 +11,16 @@ import arrow
 
 def datetime_parser(s):
     """
-    Parse timestamp s in local time. First the arrow parser is used, if it fails, the parsedatetime parser is used.
+    Parse timestamp s in local time. First the arrow parser is used, if it
+    fails, the parsedatetime parser is used.
 
     :param s:
     :return:
     """
     try:
         ts = arrow.get(s)
-        # Convert UTC to local, result of get is UTC unless it specifies timezone, bonfire assumes
-        # all time to be machine local
+        # Convert UTC to local, result of get is UTC unless it specifies
+        # timezone, bonfire assumes all time to be machine local
         if ts.tzinfo == arrow.get().tzinfo:
             ts = ts.replace(tzinfo='local')
     except:
