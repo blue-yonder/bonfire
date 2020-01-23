@@ -22,7 +22,7 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
             while True:
                 result = run_logprint(api, query, formatter, follow=False, output=output)
                 new_range = SearchRange(from_time=result.range_to,
-                                        to_time=arrow.now(api.host_tz).replace(seconds=-latency))
+                                        to_time=arrow.now(api.host_tz).shift(seconds=-latency))
                 query = query.copy_with_range(new_range)
 
                 time.sleep(interval / 1000.0)

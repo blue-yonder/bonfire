@@ -165,8 +165,8 @@ def run(host,
     if follow:
         limit = None
         sort = None
-        sr.from_time = arrow.now('local').replace(seconds=-latency - 1)
-        sr.to_time = arrow.now('local').replace(seconds=-latency)
+        sr.from_time = arrow.now('local').shift(seconds=-latency - 1)
+        sr.to_time = arrow.now('local').shift(seconds=-latency)
 
     # Get the user permissions
     userinfo = gl_api.user_info(username)
