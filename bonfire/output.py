@@ -9,14 +9,13 @@ import arrow
 import sys
 from .graylog_api import SearchRange
 
-
 def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, header=None):
     if follow:
         try:
             while True:
                 result = run_logprint(api, query, formatter, follow=False)
                 new_range = SearchRange(from_time=result.range_to,
-                        to_time=result.range_to.replace(seconds=+1))
+                        to_time="now")
                 query = query.copy_with_range(new_range)
                 query.limit = None
 
