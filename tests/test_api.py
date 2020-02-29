@@ -4,7 +4,6 @@ Created on 20.04.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
 
 import bonfire.graylog_api as api
 import arrow

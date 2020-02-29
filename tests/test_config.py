@@ -4,7 +4,6 @@ Created on 16.04.15
 @author = mharder
 '''
 
-from __future__ import division, print_function
 
 from bonfire.utils import api_from_config
 
