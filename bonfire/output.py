@@ -14,7 +14,7 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
         assert query.limit is None
 
         close_output = False
-        if output is not None and isinstance(output, basestring):
+        if output is not None and isinstance(output, str):
             output = open(output, "a")
             close_output = True
 
@@ -42,7 +42,7 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
             for msg in formatted_msgs:
                 print(msg)
         else:
-            if isinstance(output, basestring):
+            if isinstance(output, str):
                 with open(output, "a") as f:
                     f.writelines(formatted_msgs)
             else:
