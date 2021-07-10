@@ -37,7 +37,6 @@ Bonfire usage::
       -t, --tail                      Show the last n lines for the query
                                       (default)
       -d, --dump                      Print the query result as a csv
-      -o, --output TEXT               Output logs to file (only tail/dump mode)
       -f, --follow                    Poll the logging server for new logs
                                       matching the query (sets search from to now,
                                       limit to None)
