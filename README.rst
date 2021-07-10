@@ -97,6 +97,22 @@ Queries
 Known Bugs
 ==========
 
+Development
+==========
+Once you want to release a new version, do the following:
+
+* bring your git tree in order, cut the release, and tag it with the desired
+  version
+* install necessary pip packages:
+  > python3 -m pip install –-user –-upgrade setuptools wheel twine
+* bundle your release:
+  > python3 setup.py sdist bdist_wheel
+* publish it:
+  > python3 -m twine upload dist/*
+
+Note that if you have several different versions in dist, you might want to
+specify which one you want to publish.
+
 Release Notes
 =============
 
