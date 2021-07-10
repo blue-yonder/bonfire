@@ -44,7 +44,7 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
         else:
             if isinstance(output, str):
                 with open(output, "a") as f:
-                    f.writelines(formatted_msgs)
+                    f.writelines([msg+"\n" for msg in formatted_msgs])
             else:
                 output.writelines(formatted_msgs)
 
