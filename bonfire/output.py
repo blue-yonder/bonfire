@@ -9,18 +9,13 @@ import arrow
 from .graylog_api import SearchRange
 
 
-def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, output=None, header=None):
+def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, header=None):
     if follow:
         assert query.limit is None
 
-        close_output = False
-        if output is not None and isinstance(output, str):
-            output = open(output, "a")
-            close_output = True
-
         try:
             while True:
-                result = run_logprint(api, query, formatter, follow=False, output=output)
+                result = run_logprint(api, query, formatter, follow=False)
                 new_range = SearchRange(from_time=result.range_to,
                                         to_time=arrow.now(api.host_tz).shift(seconds=-latency))
                 query = query.copy_with_range(new_range)
@@ -29,23 +24,13 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, out
         except KeyboardInterrupt:
             print("\nInterrupted follow mode. Exiting...")
 
-        if close_output:
-            output.close()
-
     else:
         result = api.search(query, fetch_all=True)
         formatted_msgs = [formatter(m) for m in result.messages]
 
         formatted_msgs.reverse()
 
-        if output is None:
-            for msg in formatted_msgs:
-                print(msg)
-        else:
-            if isinstance(output, str):
-                with open(output, "a") as f:
-                    f.writelines([msg+"\n" for msg in formatted_msgs])
-            else:
-                output.writelines(formatted_msgs)
+        for msg in formatted_msgs:
+            print(msg)
 
         return result
