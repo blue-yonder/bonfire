@@ -26,20 +26,8 @@ def test_dump_format():
 
 
 def test_tail_format():
-    formatter_wc = tail_format(["source", "facility", "line", "module"])
-    formatter = tail_format(["source", "facility", "line", "module"], color=False)
-
-    run_tail_test_with_formatter_wc(formatter_wc)
-    run_tail_test_with_formatter(formatter)
-
-    formatter_wc = tail_format(["source", "facility", "line", "module", "message"])
-    formatter = tail_format(["source", "facility", "line", "module", "message"], color=False)
-    run_tail_test_with_formatter_wc(formatter_wc)
-    run_tail_test_with_formatter(formatter)
-
-
-def run_tail_test_with_formatter_wc(formatter):
-    ts = arrow.get()
+    arrow_time = arrow.get()
+    timestamp = arrow_time.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
 
     message = {
         "message": "Hällo Wörld, Здравствулте мир, γειά σου κόσμος",
@@ -48,91 +36,29 @@ def run_tail_test_with_formatter_wc(formatter):
         "facility": "b",
         "line": 10,
         "module": "c",
-        "timestamp": ts
+        "timestamp": arrow_time
     }
 
-    result = six.u("\x1b[41m\x1b[37mCRITICAL[{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
+    default_formatter = tail_format(["message"])
+    default_expected_result = f"{timestamp} '{message['message']}'"
+    assert default_formatter(Message({"message": message})) == default_expected_result
 
-    assert formatter(Message({"message": message})) == result
+    source_formatter = tail_format(["message", "source"])
+    source_expected_result = f"{timestamp} '{message['message']}' '{message['source']}'"
+    assert source_formatter(Message({"message": message})) == source_expected_result
 
-    message["level"] = 3
-    result = six.u("\x1b[31mERROR   [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 4
-    result = six.u("\x1b[33mWARNING [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 5
-    result = six.u("\x1b[32mNOTICE  [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 6
-    result = six.u("\x1b[32mINFO    [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 7
-    result = six.u("\x1b[34mDEBUG   [{}] Hällo Wörld, Здравствулте мир, γειά σου κόσμος # source:a; facility:b; line:10; module:c\x1b[0m").format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
+    varied_formatter = tail_format(["line", "source", "level"])
+    varied_expected_result = f"{timestamp} '{message['line']}' '{message['source']}' '{message['level']}'"
+    assert varied_formatter(Message({"message": message})) == varied_expected_result
 
 
-def run_tail_test_with_formatter(formatter):
-    ts = arrow.get()
+    colorful_default_formatter = tail_format(["message"], True)
+    colors = ["\x1b[41m\x1b[37m", "\x1b[31m", "\x1b[33m", "\x1b[32m", "\x1b[32m", "\x1b[34m"]
 
-    message = {
-        "message": "Hallo World",
-        "source": "a",
-        "level": 2,
-        "facility": "b",
-        "line": 10,
-        "module": "c",
-        "timestamp": ts
-    }
+    def do_colorful_test(formatter, message, expected_result, level):
+        message["level"] = level
+        assert formatter(Message({"message": message})) == expected_result
 
-    result = "CRITICAL[{}] Hallo World # source:a; facility:b; line:10; module:c".format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 3
-    result = "ERROR   [{}] Hallo World # source:a; facility:b; line:10; module:c".format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 4
-    result = "WARNING [{}] Hallo World # source:a; facility:b; line:10; module:c".format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 5
-    result = "NOTICE  [{}] Hallo World # source:a; facility:b; line:10; module:c".format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 6
-    result = "INFO    [{}] Hallo World # source:a; facility:b; line:10; module:c".format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
-
-    message["level"] = 7
-    result = "DEBUG   [{}] Hallo World # source:a; facility:b; line:10; module:c".format(
-        ts.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-    )
-    assert formatter(Message({"message": message})) == result
+    for level in range(2,8):
+        expected_result = "{}{} '{}'\x1b[0m".format(colors[level-2], timestamp, message['message'])
+        do_colorful_test(colorful_default_formatter, message, expected_result, level)
