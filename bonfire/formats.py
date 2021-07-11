@@ -8,7 +8,7 @@ from termcolor import colored
 import syslog
 
 
-def tail_format(fields=["source", "facility", "line", "module"], color=True):
+def tail_format(fields, color=True):
     def format(entry):
         message_text = entry.message
         timestamp = entry.timestamp.to('local')
@@ -40,7 +40,7 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
         if message_text:
             message_text = " " + message_text + " #"
 
-        local_fields = list(fields)
+        local_fields = fields
         if "message" in local_fields:
             local_fields.remove("message")
 
@@ -59,7 +59,7 @@ def tail_format(fields=["source", "facility", "line", "module"], color=True):
     return format
 
 
-def dump_format(fields=["message", "source", "facility", "line", "module"]):
+def dump_format(fields):
     def format(entry):
         timestamp = entry.timestamp.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
         return timestamp + ";" + ";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f, "")), fields))
