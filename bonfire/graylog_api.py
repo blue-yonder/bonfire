@@ -7,6 +7,7 @@ Created on 05.03.15
 import requests
 import arrow
 import syslog
+from datetime import datetime
 
 from .dateutils import datetime_converter
 
@@ -14,7 +15,8 @@ from .dateutils import datetime_converter
 class Message(object):
     def __init__(self, message_dict={}):
         self.message_dict = dict(message_dict["message"])
-        self.timestamp = arrow.get(self.message_dict.get("timestamp", None))
+        self.timestamp = arrow.get(self.message_dict.get("timestamp",
+            datetime.utcnow()))
         self.level = self.message_dict.get("level", syslog.LOG_INFO)
         self.message = self.message_dict.get("message", "")
 
@@ -28,8 +30,8 @@ class SearchResult(object):
         self.query_object = None
         self.used_indices = result_dict.get("used_indices", None)
         self.queried_range = result_dict.get("queried_range", None)
-        self.range_from = arrow.get(result_dict.get("from", None))
-        self.range_to = arrow.get(result_dict.get("to", None))
+        self.range_from = arrow.get(result_dict.get("from", datetime.utcnow()))
+        self.range_to = arrow.get(result_dict.get("to", datetime.utcnow()))
         self.range_duration = result_dict.get("time", None)
         self.fields = result_dict.get("fields", [])
         self.total_results = result_dict.get("total_results", None)
@@ -51,7 +53,8 @@ class SearchRange(object):
 
     def range_in_seconds(self):
         if self.is_relative():
-            range = arrow.now('local').timestamp - self.from_time.timestamp
+            range = int(arrow.now('local').datetime.timestamp()) - \
+            (self.from_time.datetime.timestamp())
         else:
             range = (self.to_time - self.from_time).seconds
 
