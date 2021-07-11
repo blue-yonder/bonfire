@@ -7,61 +7,39 @@ Created on 11.03.15
 from termcolor import colored
 import syslog
 
+def get_log_color_and_background(level):
+    log_color = 'green'
+    log_background = None
 
-def tail_format(fields, color=True):
-    def format(entry):
-        message_text = entry.message
-        timestamp = entry.timestamp.to('local')
-        level_string = entry.level
-
+    if level == syslog.LOG_CRIT:
+        log_color = 'white'
+        log_background = 'on_red'
+    elif level == syslog.LOG_ERR:
+        log_color = 'red'
+    elif level == syslog.LOG_WARNING:
+        log_color = 'yellow'
+    elif level == syslog.LOG_NOTICE:
         log_color = 'green'
-        log_background = None
+    elif level == syslog.LOG_INFO:
+        log_color = 'green'
+    elif level == syslog.LOG_DEBUG:
+        log_color = 'blue'
 
-        if entry.level == syslog.LOG_CRIT:
-            log_color = 'white'
-            log_background = 'on_red'
-            level_string = "CRITICAL"
-        elif entry.level == syslog.LOG_ERR:
-            log_color = 'red'
-            level_string = "ERROR   "
-        elif entry.level == syslog.LOG_WARNING:
-            log_color = 'yellow'
-            level_string = "WARNING "
-        elif entry.level == syslog.LOG_NOTICE:
-            log_color = 'green'
-            level_string = "NOTICE  "
-        elif entry.level == syslog.LOG_INFO:
-            log_color = 'green'
-            level_string = "INFO    "
-        elif entry.level == syslog.LOG_DEBUG:
-            log_color = 'blue'
-            level_string = "DEBUG   "
+    return log_color, log_background
 
-        if message_text:
-            message_text = " " + message_text + " #"
+def tail_format(fields, colorful=False):
+    return formatter(fields, " ", colorful)
 
-        local_fields = fields
-        if "message" in local_fields:
-            local_fields.remove("message")
+def dump_format(fields, colorful=False):
+    return formatter(fields, ";", colorful)
 
-        field_text = map(lambda f: "{}:{}".format(f, entry.message_dict.get(f, "")), local_fields)
-
-        log = "{level_string}[{timestamp}]{message_text} {field_text}".format(
-            timestamp=timestamp.format("YYYY-MM-DD HH:mm:ss.SS"),
-            level_string=level_string,
-            message_text=message_text,
-            field_text="; ".join(field_text))
-        if color:
-            return colored(log, log_color, log_background)
-        else:
-            return log
-
-    return format
-
-
-def dump_format(fields):
+def formatter(fields, seperator, colorful):
     def format(entry):
         timestamp = entry.timestamp.to('local').format("YYYY-MM-DD HH:mm:ss.SS")
-        return timestamp + ";" + ";".join(map(lambda f: "'{val}'".format(val=entry.message_dict.get(f, "")), fields))
-
+        msg = timestamp + seperator + seperator.join(map(lambda f: u"'{val}'"\
+                .format(val=entry.message_dict.get(f, "")), fields))
+        if colorful:
+            log_color, log_background = get_log_color_and_background(entry.level)
+            return colored(msg, log_color, log_background)
+        return msg
     return format

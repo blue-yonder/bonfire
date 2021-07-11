@@ -46,6 +46,7 @@ from .formats import tail_format, dump_format
 @click.option('--template-option', '-x', multiple=True, help="Template options for the stored query")
 @click.option('--sort', '-s', default=None, help="Field used for sorting (default: timestamp)")
 @click.option("--asc/--desc", default=False, help="Sort ascending / descending")
+@click.option("--color", default=False, help="Print colorful logs using log level")
 @click.option("--proxy", default=None, help="Proxy to use for the http/s request")
 @click.argument('query', default="*")
 def run(host,
@@ -68,6 +69,7 @@ def run(host,
         template_option,
         sort,
         asc,
+        color,
         proxy,
         query):
     """
@@ -185,9 +187,9 @@ def run(host,
 
     # Check the mode in which the program should run (dump, tail or interactive mode)
     if mode == "tail":
-        formatter = tail_format(fields)
+        formatter = tail_format(fields, color)
     elif mode == "dump":
-        formatter = dump_format(fields)
+        formatter = dump_format(fields, color)
 
     run_logprint(gl_api, q, formatter, follow, interval, latency)
 
