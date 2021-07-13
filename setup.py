@@ -501,6 +501,7 @@ def setup_package():
           author_email=metadata['author_email'],
           license=metadata['license'],
           long_description=read('README.rst'),
+          long_description_content_type='text/x-rst',
           classifiers=metadata['classifiers'],
           test_suite='tests',
           packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
