@@ -99,7 +99,7 @@ Testing
 
 Cf. the travis script for running tests. Make sure you disable proxies / set
 noproxy if you're using a proxy, to be able to reach the test dummy server
-(called `dummyserver`), e.g.
+(called ``dummyserver``), e.g.::
 
 > env no_proxy=dummyhost python setup.py test
 
@@ -107,7 +107,7 @@ Known Bugs
 ==========
 
 Development
-==========
+===========
 Once you want to release a new version, do the following:
 
 * bring your git tree in order, cut the release, and tag it with the desired
