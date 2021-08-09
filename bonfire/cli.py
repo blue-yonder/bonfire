@@ -123,6 +123,16 @@ def run(host,
 
     username = gl_api.username
 
+    # We definitely have credentials - can query for host timezone, if not set
+    # already
+    # If host_tz is set to default utc, try to retrieve timezone from the server
+    # which might be UTC but it doesn't hurt
+    if gl_api.host_tz == 'utc':
+        try:
+            gl_api.host_tz = gl_api.host_timezone()
+        except:
+            print("Unable to retrieve timezone from server\nUsing default timezone: " + gl_api.host_tz)
+
     # Check if the query should be retrieved from the configuration
     if query[0] == ":":
         section_name = "query" + query

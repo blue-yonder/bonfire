@@ -181,6 +181,34 @@ def test_userinfo():
 
 
 @httpretty.activate
+def test_nodeinfo():
+    httpretty.register_uri(httpretty.GET, "http://dummyhost:80/system/cluster/nodes",
+                           body='{"nodes":[{"cluster_id": "testcluster", "node_id": "node1", "is_master": true}], "total": 1}',
+                           content_type="application/json")
+
+    # More of some dummy tests now
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
+
+    result = g.node_info()
+    expected = {"nodes":[{"cluster_id": "testcluster", "node_id": "node1", "is_master": True}], "total": 1}
+    assert result == expected
+
+
+@httpretty.activate
+def test_clusterinfo():
+    httpretty.register_uri(httpretty.GET, "http://dummyhost:80/cluster",
+                           body='{"nodeid":{"facility": "graylog-server", "codename": "Noir"}}',
+                           content_type="application/json")
+
+    # More of some dummy tests now
+    g = api.GraylogAPI("dummyhost", 80, '/', "dummy", password="dummy")
+
+    result = g.cluster_info()
+    expected = {"nodeid":{"facility": "graylog-server", "codename": "Noir"}}
+    assert result == expected
+
+
+@httpretty.activate
 def test_streams():
     httpretty.register_uri(httpretty.GET, "http://dummyhost:80/streams",
                            body='[{"somestream" : "a" }]',

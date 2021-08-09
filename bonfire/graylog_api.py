@@ -148,9 +148,33 @@ class GraylogAPI(object):
         result.query_object = query
         return result
 
+    def node_info(self):
+        url = "system/cluster/nodes"
+        return self.get(url=url)
+
+    def cluster_info(self):
+        url = "cluster"
+        return self.get(url=url)
+
     def user_info(self, username):
         url = "users/" + username
         return self.get(url=url)
+
+    def host_timezone(self):
+        # Need to retreive server timezoneinfo to be passed to SearchQuery
+        # Will be using master node's timezone and assuming
+        # that's used across the cluster
+
+        # First getting all the nodes to determine master
+        masternode = None
+        for nodes in self.node_info()["nodes"]:
+            if nodes["is_master"] == True:
+                masternode = nodes["node_id"]
+                # There can only be one
+                break
+
+        # timezone of master node
+        return self.cluster_info()[masternode]["timezone"]
 
     def streams(self):
         url = "streams"
