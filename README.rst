@@ -85,6 +85,25 @@ Now you can run queries via such as::
     > bonfire :example
     ... runs the example query on the default node
 
+
+All available options for the config file can be seen in the following
+template::
+
+    [node:NODE_NAME]
+    host=IP_ADDRESS
+    port=PORT_NUMBER
+    endpoint=ENDPOINT
+    username=USERNAME
+    password=CLEARTEXT_PASSWORD
+    follow=ANYSTRING # follow mode is set to true if present, regardless of the
+                     # actual value
+
+    [query:QUERY_NAME]
+    query=SOME_QUERY_STRING
+    from=TIMESTAMP
+    limit=MAX_NUMBER_OF_RESULTS
+    fields=COMMA_DELIMITED_FIELD_NAMES
+
 Query Templates
 ---------------
 
