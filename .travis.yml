@@ -6,6 +6,6 @@ python:
 - '3.8'
 install:
 - pip install -r requirements.txt
-- pip install coveralls
+- pip install -r test-requirements.txt
 script: python setup.py test
 after_success: coveralls
