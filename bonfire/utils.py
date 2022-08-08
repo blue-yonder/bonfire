@@ -14,6 +14,15 @@ def cli_error(msg):
     click.echo(click.style(msg, fg='red'))
     sys.exit(1)
 
+def config_says_follow(cfg, node=None):
+    """ config_says_follow checks the section for the given node or the default
+    node, to see if a follow option is given. It does not make any checks on
+    whether a section exists. """
+    if node is not None:
+        section_name = "node:" + node_name
+    else:
+        section_name = "node:default"
+    return cfg.has_option(section_name, "follow")
 
 def api_from_config(cfg, node_name="default"):
     section_name = "node:" + node_name

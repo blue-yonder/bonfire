@@ -19,7 +19,7 @@ import arrow
 
 from .config import get_config, get_password_from_keyring, store_password_in_keyring, get_templated_option
 from .graylog_api import SearchRange, SearchQuery
-from .utils import cli_error, api_from_config, api_from_host
+from .utils import cli_error, api_from_config, api_from_host, config_says_follow
 from .output import run_logprint
 from .formats import tail_format, dump_format
 
@@ -168,6 +168,8 @@ def run(host,
 
     if limit <= 0:
         limit = None
+
+    follow = follow or config_says_follow(cfg, node)
 
     # Set limit to None, sort to none and start time to now, if follow is active
     if follow:
