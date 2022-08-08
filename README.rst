@@ -97,6 +97,8 @@ template::
     password=CLEARTEXT_PASSWORD
     follow=ANYSTRING # follow mode is set to true if present, regardless of the
                      # actual value
+    keyring=ANYSTRING # use keyring is set to true if present, regardless of the
+                      # actual value
 
     [query:QUERY_NAME]
     query=SOME_QUERY_STRING

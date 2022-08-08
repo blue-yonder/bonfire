@@ -19,7 +19,7 @@ import arrow
 
 from .config import get_config, get_password_from_keyring, store_password_in_keyring, get_templated_option
 from .graylog_api import SearchRange, SearchQuery
-from .utils import cli_error, api_from_config, api_from_host, config_says_follow
+from .utils import cli_error, api_from_config, api_from_host, config_says_follow, config_says_keyring
 from .output import run_logprint
 from .formats import tail_format, dump_format
 
@@ -108,6 +108,8 @@ def run(host,
 
     if username is not None:
         gl_api.username = username
+
+    keyring = keyring or config_says_keyring(cfg, node)
 
     if keyring and password is None and gl_api.password is None:
         password = get_password_from_keyring(gl_api.host, gl_api.username)
