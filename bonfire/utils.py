@@ -11,7 +11,7 @@ from .graylog_api import GraylogAPI
 
 
 def cli_error(msg):
-    click.echo(click.style(msg, fg='red'))
+    click.echo(click.style(msg, fg='red'), err=True)
     sys.exit(1)
 
 

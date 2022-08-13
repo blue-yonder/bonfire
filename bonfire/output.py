@@ -4,6 +4,7 @@ Created on 11.03.15
 @author = mharder
 '''
 
+import sys
 import time
 import arrow
 from .graylog_api import SearchRange
@@ -22,7 +23,7 @@ def run_logprint(api, query, formatter, follow=False, interval=0, latency=2, hea
 
                 time.sleep(interval / 1000.0)
         except KeyboardInterrupt:
-            print("\nInterrupted follow mode. Exiting...")
+            print("\nInterrupted follow mode. Exiting...", file=sys.stderr)
 
     else:
         result = api.search(query, fetch_all=True)
