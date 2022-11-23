@@ -13,6 +13,7 @@ __license__ = "new-bsd"
 
 _logger = logging.getLogger(__name__)
 
+import sys
 import click
 import getpass
 import arrow
@@ -87,7 +88,7 @@ def run(host,
             # A manual host configuration is used
             if username is None:
                 username = click.prompt("Enter username for {host}:{port}".format(host=host, port=port),
-                                        default=getpass.getuser())
+                                        default=getpass.getuser(), err=True)
             if tls:
                 scheme = "https"
             else:
@@ -114,7 +115,7 @@ def run(host,
 
     if password is None and gl_api.password is None:
         password = click.prompt("Enter password for {username}@{api}".format(
-            username=gl_api.username, api=gl_api), hide_input=True)
+            username=gl_api.username, api=gl_api), hide_input=True, err=True)
 
     if gl_api.password is None:
         gl_api.password = password
@@ -132,7 +133,8 @@ def run(host,
         try:
             gl_api.host_tz = gl_api.host_timezone()
         except:
-            print("Unable to retrieve timezone from server\nUsing default timezone: " + gl_api.host_tz)
+            print("Unable to retrieve timezone from server\nUsing default timezone: " + gl_api.host_tz,
+                  file=sys.stderr)
 
     # Check if the query should be retrieved from the configuration
     if query[0] == ":":
@@ -184,10 +186,11 @@ def run(host,
     if stream or (userinfo["permissions"] != ["*"] and gl_api.default_stream is None):
         if not stream:
             streams = gl_api.streams()["streams"]
-            click.echo("Please select a stream to query:")
+            click.echo("Please select a stream to query:", err=True)
             for i, stream in enumerate(streams):
-                click.echo("{}: Stream '{}' (id: {})".format(i, stream["title"], stream["id"]))
-            i = click.prompt("Enter stream number:", type=int, default=0)
+                click.echo("{}: Stream '{}' (id: {})".format(i, stream["title"], stream["id"]),
+                           err=True)
+            i = click.prompt("Enter stream number:", type=int, default=0, err=True)
             stream = streams[i]["id"]
         stream_filter = "streams:{}".format(stream)
 
