@@ -6,6 +6,7 @@ Created on 11.03.15
 
 from termcolor import colored
 import syslog
+import json
 
 def get_log_color_and_background(level):
     log_color = 'green'
@@ -43,3 +44,6 @@ def formatter(fields, seperator, colorful):
             return colored(msg, log_color, log_background)
         return msg
     return format
+
+def json_format(entry):
+    return json.dumps(entry.message_dict)
